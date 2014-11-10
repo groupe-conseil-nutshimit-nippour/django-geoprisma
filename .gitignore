@@ -1,0 +1,14 @@
+*.pyc
+*~
+.idea
+.project
+.pydevproject
+*.geany
+build
+dist
+*.egg*
+*.bak
+*.db
+*.tmp
+.DS_store
+*.sqlite3

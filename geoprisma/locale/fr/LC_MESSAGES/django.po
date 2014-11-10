@@ -1,0 +1,353 @@
+# Django-geoprisma interface french translation
+# Copyright (C) 2014 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the geoprisma package.
+# Kim Desrosiers <kimdesro@gmail.com>, 2014.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-04-30 10:00-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kim Desrosiers <kimdesro@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: forms.py:74
+msgid "resources"
+msgstr "resources"
+
+#: templates/geoprisma/_layouts/base.html:173
+msgid "Menu"
+msgstr "Menu"
+
+#: templates/geoprisma/_layouts/base.html:269
+msgid "Information found"
+msgstr "Informations trouvées"
+
+#: templates/geoprisma/inc/toolbar_o_matic.html:237
+msgid "Disconnection"
+msgstr "Déconnexion"
+
+#: templates/geoprisma/widgets/editfeature_create/editfeature_create.html:67
+msgid "Create new features"
+msgstr "Créer de nouveaux éléments"
+
+#: templates/geoprisma/widgets/editfeature_create/editfeature_create_source.html:4
+msgid "Add control was disabled"
+msgstr "L'ajout de contrôles a été désactivé"
+
+#: templates/geoprisma/widgets/editfeature_create/editfeature_create_source.html:5
+msgid "Add control was disabled, because the feature is already created"
+msgstr ""
+"L'ajout de contrôles a été désactivé, parce que l'éléments a déjà été créés"
+
+#: templates/geoprisma/widgets/editfeature_delete/editfeature_delete.html:58
+msgid "Multiple selection (drag box)"
+msgstr "Sélection multiple (boite de selection)"
+
+#: templates/geoprisma/widgets/editfeature_delete/editfeature_delete.html:60
+msgid "Single selection (point)"
+msgstr "Sélection simple (point)"
+
+#: templates/geoprisma/widgets/editfeature_delete/editfeature_delete.html:62
+msgid "Delete features"
+msgstr "Suppréssion d'éléments"
+
+#: templates/geoprisma/widgets/editfeature_delete/editfeature_delete_source.html:4
+msgid "Delete selected features ?"
+msgstr "Supprimer l'élément sélectionné ?"
+
+#: templates/geoprisma/widgets/editfeature_update/editfeature_update.html:58
+msgid "Modify features"
+msgstr "Modifier les éléments"
+
+#: templates/geoprisma/widgets/featurepanel_form/featurepanel_form_source.html:5
+msgid "Commit"
+msgstr "Soumettre"
+
+#: templates/geoprisma/widgets/featurepanel_form/featurepanel_form_source.html:6
+msgid "Commit modifications"
+msgstr "Soumettre les modifications"
+
+#: templates/geoprisma/widgets/featurepanel_form/featurepanel_form_source.html:7
+msgid "Cancel"
+msgstr "Annuler"
+
+#: templates/geoprisma/widgets/featurepanel_form/featurepanel_form_source.html:8
+msgid "Cancel current modifications.  Geometry is reset to original."
+msgstr "Annuler les modifications actuels. "
+
+#: templates/geoprisma/widgets/featurepanel_selector/featurepanel_selector_source.html:14
+msgid "Consult"
+msgstr "Consulter"
+
+#: templates/geoprisma/widgets/featurepanel_selector/featurepanel_selector_source.html:15
+msgid "Results"
+msgstr "Résultats"
+
+#: templates/geoprisma/widgets/featurepanel_selector/featurepanel_selector_source.html:16
+msgid "No context defined"
+msgstr "Aucun context n'est défini"
+
+#: templates/geoprisma/widgets/featurepanel_selector/featurepanel_selector_source.html:17
+msgid "No context was defined for this resource"
+msgstr "Aucun context n'a été définie pour cette resource"
+
+#: templates/geoprisma/widgets/filetreepanel/filetreepanel.html:10
+msgid "Files"
+msgstr "Fichiers"
+
+#: templates/geoprisma/widgets/geoextprintform/geoextprintform.html:111
+msgid "Title"
+msgstr "Titre"
+
+#: templates/geoprisma/widgets/geoextprintform/geoextprintform.html:144
+msgid "Comment"
+msgstr "Commentaire"
+
+#: templates/geoprisma/widgets/geoextprintform/geoextprintform.html:160
+msgid "Layout"
+msgstr "Disposition"
+
+#: templates/geoprisma/widgets/geoextprintform/geoextprintform.html:179
+msgid "Resolution"
+msgstr "Résolution"
+
+#: templates/geoprisma/widgets/geoextprintform/geoextprintform.html:204
+msgid "Scale"
+msgstr "Échelle"
+
+#: templates/geoprisma/widgets/geoextprintform/geoextprintform.html:227
+msgid "Rotation"
+msgstr "Rotation"
+
+#: templates/geoprisma/widgets/geoextprintform/geoextprintform.html:241
+msgid "Print"
+msgstr "Imprimer"
+
+#: templates/geoprisma/widgets/geoextprintform/geoextprintform.html:251
+msgid "Create PDF"
+msgstr "Créer un PDF"
+
+#: templates/geoprisma/widgets/geoextprintform/geoextprintform.html:273
+msgid "Generating PDF.  Please wait..."
+msgstr "Création du PDF. Veuillez patienter..."
+
+#: templates/geoprisma/widgets/geoextprintform/geoextprintform_source.html:7
+msgid ""
+"Some layers currently visible on the map are not supported by the print "
+"service"
+msgstr ""
+"Il y a des couches visibles qui ne sont pas supportées par le service "
+"d'impression "
+
+#: templates/geoprisma/widgets/geoextprintform/geoextprintform_source.html:8
+msgid "They would be excluded from the document."
+msgstr "Ils vont être exclues du document."
+
+#: templates/geoprisma/widgets/geoextprintform/geoextprintform_source.html:9
+msgid "Do you wish to proceed anyway ?"
+msgstr "Est-ce que vous voulez continuer malgré tout?"
+
+#: templates/geoprisma/widgets/geoextprintform/geoextprintform_source.html:10
+msgid "Please, turn them off first."
+msgstr "Veuillez le désactiver."
+
+#: templates/geoprisma/widgets/geoextprintform/geoextprintform_source.html:11
+msgid "TileCache using WMS requests"
+msgstr "TileCache utilise des requêtes WMS"
+
+#: templates/geoprisma/widgets/geoextprintform/geoextprintform_source.html:12
+msgid ""
+"There's currently an active drawing control.  Please, turn it off first."
+msgstr "It y a présentement un outil de dessin activé. Veuillez le désactiver."
+
+#: templates/geoprisma/widgets/geoexttoolbar/geoexttoolbar_source.html:5
+msgid "Zoom to maximum extent"
+msgstr "Zoom arrière au maximum"
+
+#: templates/geoprisma/widgets/geoexttoolbar/geoexttoolbar_source.html:6
+msgid "Zoom in : left click on map or draw a zoom box"
+msgstr ""
+"Zoom avant : clique gauche sur la cârte ou utiliser une boîte de séletion"
+
+#: templates/geoprisma/widgets/geoexttoolbar/geoexttoolbar_source.html:7
+msgid "Zoom out : left click on map or draw a zoom box"
+msgstr ""
+"Zoom arrière : clique gauche sur la cârte ou utiliser une boîte de séletion"
+
+#: templates/geoprisma/widgets/geoexttoolbar/geoexttoolbar_source.html:8
+msgid "Pan : click left and drag"
+msgstr "Déplacement : cliquer gauche et glisser"
+
+#: templates/geoprisma/widgets/geoexttoolbar/geoexttoolbar_source.html:9
+msgid "Previous view"
+msgstr "Vue précédente"
+
+#: templates/geoprisma/widgets/geoexttoolbar/geoexttoolbar_source.html:10
+msgid "Next view"
+msgstr "Prochaine vue"
+
+#: templates/geoprisma/widgets/getmouseposition/getmouseposition.html:22
+msgid "Coordinates"
+msgstr "Coordonnées"
+
+#: templates/geoprisma/widgets/getmouseposition/getmouseposition.html:23
+msgid "Coordinate info box"
+msgstr "Boîte d'information des coordonnées"
+
+#: templates/geoprisma/widgets/mapfishrecenter/mapfishrecenter.html:9
+msgid "Recenter"
+msgstr "Recentrer"
+
+#: templates/geoprisma/widgets/mapfishrecenter/mapfishrecenter_source.html:5
+msgid "Filter"
+msgstr "Filtre"
+
+#: templates/geoprisma/widgets/mapfishrecenter/mapfishrecenter_source.html:6
+msgid "Starts with"
+msgstr "Commencer avez"
+
+#: templates/geoprisma/widgets/mapfishrecenter/mapfishrecenter_source.html:7
+msgid "Anywhere"
+msgstr "N'importe où"
+
+#: templates/geoprisma/widgets/mapfishrecenter/mapfishrecenter_source.html:8
+msgid "Ends with"
+msgstr "Terminer avec"
+
+#: templates/geoprisma/widgets/mapfishrecenter/mapfishrecenter_source.html:9
+msgid "Min nb of chars"
+msgstr "Nombre minimal de caractères"
+
+#: templates/geoprisma/widgets/mapfishrecenter/mapfishrecenter_source.html:10
+msgid "Show center"
+msgstr "Afficher le centre"
+
+#: templates/geoprisma/widgets/querybyrect/querybyrect.html:70
+msgid "Draw a box on the map to get information on queryable layers"
+msgstr ""
+"Dessiner un boîte sur la cârte pour obtenir des informations sur les couches "
+"disponibles"
+
+#: templates/geoprisma/widgets/querybyrect/querybyrect.html:125
+#: templates/geoprisma/widgets/queryonclick/queryonclick.html:108
+msgid "List of queryable layers"
+msgstr "Liste des couches disponibles"
+
+#: templates/geoprisma/widgets/querybyrect/querybyrect_source.html:5
+#: templates/geoprisma/widgets/queryonclick/queryonclick_source.html:5
+msgid "Query in progress, please wait..."
+msgstr "Requête en cours, veuillez patienter..."
+
+#: templates/geoprisma/widgets/querybyrect/querybyrect_source.html:6
+#: templates/geoprisma/widgets/queryonclick/queryonclick_source.html:6
+#: templates/geoprisma/widgets/shortcut/shortcut_source.html:4
+msgid "Loading ..."
+msgstr "Chargement..."
+
+#: templates/geoprisma/widgets/querybyrect/querybyrect_source.html:7
+#: templates/geoprisma/widgets/queryonclick/queryonclick_source.html:7
+msgid "Completed : "
+msgstr "Complet : "
+
+#: templates/geoprisma/widgets/querybyrect/querybyrect_source.html:8
+#: templates/geoprisma/widgets/queryonclick/queryonclick_source.html:8
+msgid " of "
+msgstr " de "
+
+#: templates/geoprisma/widgets/querybyrect/querybyrect_source.html:9
+#: templates/geoprisma/widgets/queryonclick/queryonclick_source.html:9
+msgid "There are no queryable layers"
+msgstr "Il n'y a pas de couches disponibles"
+
+#: templates/geoprisma/widgets/querybyrect/querybyrect_source.html:10
+#: templates/geoprisma/widgets/queryonclick/queryonclick_source.html:10
+#: templates/geoprisma/widgets/resultextgrid/resultextgrid_source.html:7
+#: templates/geoprisma/widgets/resultextgrid/resultextgrid_source.html:10
+msgid "Warning"
+msgstr "Attention"
+
+#: templates/geoprisma/widgets/querybyrect/querybyrect_source.html:11
+#: templates/geoprisma/widgets/queryonclick/queryonclick_source.html:11
+msgid "No record found"
+msgstr "Aucun resultat trouvé"
+
+#: templates/geoprisma/widgets/querybyrect/querybyrect_source.html:12
+#: templates/geoprisma/widgets/queryonclick/queryonclick_source.html:12
+#: templates/geoprisma/widgets/resultextgrid/resultextgrid_source.html:11
+msgid "Result"
+msgstr "Résultat"
+
+#: templates/geoprisma/widgets/queryonclick/queryonclick.html:38
+msgid "Click on the map to get information on queryable layers"
+msgstr ""
+"Cliqué sur la cârte pour recevoir des informations sur les couches "
+"disponibles"
+
+#: templates/geoprisma/widgets/resultextgrid/resultextgrid_source.html:4
+msgid "<p>Query the map first</p>"
+msgstr "<p>Veuillez seletionner une cârte en premier<p>"
+
+#: templates/geoprisma/widgets/resultextgrid/resultextgrid_source.html:5
+msgid "Help"
+msgstr "Aide"
+
+#: templates/geoprisma/widgets/resultextgrid/resultextgrid_source.html:6
+msgid "<p>No result to display</p>"
+msgstr "<p>Aucun résultat à afficher</p>"
+
+#: templates/geoprisma/widgets/resultextgrid/resultextgrid_source.html:8
+msgid "Query result"
+msgstr "Résultat de la requête"
+
+#: templates/geoprisma/widgets/resultextgrid/resultextgrid_source.html:9
+msgid "Please select a row"
+msgstr "Veuillez sélectionner une ligne"
+
+#: templates/geoprisma/widgets/shortcut/shortcut.html:76
+#: templates/geoprisma/widgets/shortcut/shortcut.html:84
+#: templates/geoprisma/widgets/shortcut/shortcut.html:100
+#: templates/geoprisma/widgets/shortcut/shortcut.html:102
+msgid "shortcut"
+msgstr "raccourci"
+
+#: templates/geoprisma/widgets/shortcut/shortcut.html:80
+#: templates/geoprisma/widgets/shortcut/shortcut.html:106
+msgid "by"
+msgstr "par"
+
+#: templates/geoprisma/widgets/shortcut/shortcut_source.html:5
+msgid "Please wait..."
+msgstr "Veuillez patienter..."
+
+#: templates/geoprisma/widgets/shortcut/shortcut_source.html:20
+msgid "Shortcut"
+msgstr "Raccourci"
+
+msgid "View"
+msgstr "Voir"
+
+msgid "EPSG:32187"
+msgstr "MTM, Fuseau 7"
+
+msgid "EPSG:32188"
+msgstr "MTM, Fuseau 8"
+
+msgid "EPSG:2959"
+msgstr "UTM, zone 18"
+
+msgid "EPSG:2960"
+msgstr "UTM, zone 19"
+
+msgid "EPSG:4326#DMS"
+msgstr "DMS"
+
+msgid "EPSG:4326"
+msgstr "Degré décimal"
