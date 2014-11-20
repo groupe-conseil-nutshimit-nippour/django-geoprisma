@@ -4,6 +4,8 @@ import re
 import json
 import shutil
 from django.http import HttpResponse
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 
 
 class FileProxyFactory(object):
@@ -115,7 +117,7 @@ class FileProxy(proxy.Proxy):
             "" si null
         """
         if self.m_objRequest.REQUEST.get('path') != "":
-            path = re.sub('/^root\/?/', '', self.m_objRequest.REQUEST.get('path'))
+            path = re.sub(r'^root', '', self.m_objRequest.REQUEST.get('path'))
             return path.replace('\\', '/')
         else:
             return ''
@@ -206,6 +208,9 @@ class FileTree(object):
     Class FileTree
 
     """
+
+    m_strRootPath = ''
+
     def __init__(self, pstrRootPath=""):
         """
         Constructeur
@@ -213,7 +218,7 @@ class FileTree(object):
         Args:
             pstrRootPath: le path de base pour le listing
         """
-        if pstrRootPath is not "" and os.path.isdir(pstrRootPath):
+        if pstrRootPath != "" and os.path.isdir(pstrRootPath):
             self.setRootPath(pstrRootPath)
 
     def get(self, pstrFilePath, pobjArrayFileList=[], pobjArrayResources=[]):
@@ -235,9 +240,9 @@ class FileTree(object):
             pobjArrayFileList = self.getFileList(strFilePath)
         objArrayDirectoryToJSON = []
         for strEntry in pobjArrayFileList:
-            if strEntry[0, 1] is not '.':
-                objArrayDirectoryToJSON = self.getFileJSON(strFilePath, strEntry, pobjArrayResources)
-        return '['+objArrayDirectoryToJSON.join(',')+']'
+            if strEntry[0:1] != '.':
+                objArrayDirectoryToJSON.append(self.getFileJSON(strFilePath, strEntry, pobjArrayResources))
+        return '['+",".join(objArrayDirectoryToJSON)+']'
 
     def download(self, pstrFilePath, pbForceDownload=True):
         """
@@ -290,20 +295,20 @@ class FileTree(object):
         Returns:
             JSON
         """
-        if pstrPath[-1] is not '/':
+        if pstrPath[-1] != '/':
             pstrPath += '/'
         objFileDescription = {'text': pstrFile,
                               'disabled': False,
                               'leaf': False if os.path.isdir(pstrPath+pstrFile) else True,
-                              'qtip': 'Size: '+os.path.getsize(pstrPath+pstrFile)+' bytes' if os.path.isfile(pstrPath+pstrFile) else ''}
+                              'qtip': 'Size: '+str(os.path.getsize(pstrPath+pstrFile))+' bytes' if os.path.isfile(pstrPath+pstrFile) else ''}
 
         if os.path.isdir(pstrPath+pstrFile):
             objFileDescription['cls'] = 'folder'
         elif pstrFile.rfind('.'):
             objFileDescription['iconCls'] = 'file-'+pstrFile[pstrFile.rfind('.')+1].lower()
 
-        if pobjArrayResources[pstrFile]:
-            objFileDescription['osmresource'] = pobjArrayResources[pstrFile]
+        # if pobjArrayResources[pstrFile]:
+        #     objFileDescription['osmresource'] = pobjArrayResources[pstrFile]
 
         return json.dumps(objFileDescription)
 
@@ -316,13 +321,13 @@ class FileTree(object):
         Returns:
             Un tableau
         """
-        strFilePath = self.m_strRootPath+'/'+pstrFilePath
+        strFilePath = pstrFilePath
         objArrayFileList = []
         if not os.path.isdir(strFilePath):
             return objArrayFileList
         objDirectory = os.listdir(strFilePath)
         for strEntry in objDirectory:
-            if strEntry[0, 1] != '.':
+            if strEntry[0:1] != '.':
                 objArrayFileList.append(strEntry)
         return objArrayFileList
 
@@ -342,8 +347,8 @@ class FileTree(object):
         Args:
             pstrRootPath: La racine a definir
         """
-        if pstrRootPath[-1] is '/':
-            pstrRootPath = pstrRootPath[0, -1]
+        if pstrRootPath[-1] == '/':
+            pstrRootPath = pstrRootPath[:-1]
         self.m_strRootPath = pstrRootPath
 
     def getUploadedItem(self, prequest):
@@ -357,7 +362,7 @@ class FileTree(object):
         """
         return prequest.FILES.get('x-filename')
 
-    def upload(self, pstrBasePath):
+    def upload(self, pstrBasePath, prequest):
         """
         Upload un fichier utilisant l'element uploade
 
@@ -371,16 +376,16 @@ class FileTree(object):
         strBasePath = os.path.realpath(self.getRootPath()+'/'+pstrBasePath)
         if not self.m_strRootPath or not os.path.isdir(self.m_strRootPath) or not os.path.isdir(strBasePath):
             return
-        objArrayUploadedItem = self.getUploadedItem()
-        strFilePath = strBasePath+'/'+objArrayUploadedItem['name']
+        objArrayUploadedItem = self.getUploadedItem(prequest)
+        strFilePath = strBasePath+'/'+objArrayUploadedItem.name
         if os.path.isfile(strFilePath):
             objResponse = {'success': False,
                            'errors': {'message': "File already exists"}}
-        if objResponse is False and objArrayUploadedItem['error'] is not UPLOAD_ERR_OK:
-            objResponse = {'success': False,
-                           'errors': {'message': self.getFileUploadErrorMessage(objArrayUploadedItem['error'])}}
+        # if objResponse is False and objArrayUploadedItem['error'] is not UPLOAD_ERR_OK:
+        #     objResponse = {'success': False,
+        #                    'errors': {'message': self.getFileUploadErrorMessage(objArrayUploadedItem['error'])}}
         if objResponse is False:
-            bMoved = shutil.move(objArrayUploadedItem['tmp_name'], strFilePath)
+            bMoved = default_storage.save(strFilePath, ContentFile(objArrayUploadedItem.read()))
             if bMoved:
                 objResponse = {'success': True}
             else:
@@ -398,11 +403,12 @@ class FileTree(object):
             JSON
         """
         strPath = self.getRootPath()+'/'+pstrPath
-        if os.mkdir(strPath):
+        try:
+            os.mkdir(strPath)
             objResponse = {'success': True}
-        else:
+        except:
             objResponse = {'success': False,
-                           'errors': {'message': 'Could not create directory'}}
+                           'errors': {'error': 'Could not create directory'}}
         return json.dumps(objResponse)
 
     def getFileUploadErrorMessage(self, piErrorCode):
@@ -468,6 +474,8 @@ class FileGetProxy(FileProxy):
     Class FileGetProxy quand la requete est un get
 
     """
+    m_objArrayAvailableLayers = []
+    m_objArrayAvailableResources = []
 
     def getAction(self):
         return self.CRUD_READ
@@ -547,7 +555,7 @@ class FileGetProxy(FileProxy):
         else:
             objArraylayers = pobjArrayLayers
         strFilePath = self.getLayer()
-        if strFilePath[-1] is not '/' and len(strFilePath) > 0:
+        if strFilePath[-1] != '/' and len(strFilePath) > 0:
             strFilePath += '/'
 
         bAllAuthorized = True
@@ -618,7 +626,7 @@ class FileUploadProxy(FileProxy):
         """
         strBasePath = self.getLayer()
         objFileTree = FileTree(self.m_objService.source)
-        HttpResponse(objFileTree.upload(strBasePath))
+        return HttpResponse(objFileTree.upload(strBasePath))
 
 
 class FileNewDirProxy(FileProxy):
@@ -637,7 +645,7 @@ class FileNewDirProxy(FileProxy):
         """
         strPath = self.getLayer()
         objFileTree = FileTree(self.m_objService.source)
-        HttpResponse(objFileTree.createDirectory(strPath))
+        return HttpResponse(objFileTree.createDirectory(strPath))
 
     def getLayer(self):
         """
@@ -648,7 +656,7 @@ class FileNewDirProxy(FileProxy):
             '' si null
         """
         if self.m_objRequest.REQUEST.get('dir'):
-            path = re.sub('/^root\/?/', '', self.m_objRequest.REQUEST.get('dir'))
+            path = re.sub('^root/', '', self.m_objRequest.REQUEST.get('dir'))
             return path.replace('\\', '/')
         else:
             return ''
@@ -671,12 +679,3 @@ class FileDeleteProxy(FileProxy):
         strFilePath = self.getLayer()
         objFileTree = FileTree(self.m_objService.source)
         HttpResponse(objFileTree.delete(strFilePath))
-
-
-
-
-
-
-
-
-

@@ -1,10 +1,14 @@
 {% load i18n %}
 {% load object_extras %}
+{% load url from future %}
 <script type="text/javascript">
     Ext.QuickTips.init();
     Ext.form.Field.prototype.msgTarget = 'side';
-
-    var fileServiceURL = Ext.urlAppend(baseUrl + 'proxy.php', 'osmservice={{widget|args:"servicename"|call:"getOption"}}');
+    {% with serviceId=widget|args:"servicename"|call:"getOption" %}
+    {% with fileService=appSession|args:serviceId|call:"getServiceById" %}
+    var fileServiceURL = '{% url 'geoprisma:proxyurl' %}/{{fileService.slug}}';
+    {% endwith %}
+    {% endwith %}
     var defaultOptions = {
         url: fileServiceURL,
         title: '{% trans "Files" %}',
@@ -23,10 +27,10 @@
 
     var widgetOptions = Ext.applyIf( {{widget.printOptions}}, defaultOptions);
 
-   
-    {%with enableUploadOption=widget|args:"enableUpload"|call:"getOption"  %}  
+
+    {%with enableUploadOption=widget|args:"enableUpload"|call:"getOption"  %}
         {%with enableNewFolderOption=widget|args:"enableNewFolder"|call:"getOption"  %}
-        
+
             {% if enableUploadOption == "true" or enableNewFolderOption == "true" %}
               Ext.apply(widgetOptions, {
                 {# readOnly set false to let the Ext.ux.FileTreePanel create  the treeEditor. #}

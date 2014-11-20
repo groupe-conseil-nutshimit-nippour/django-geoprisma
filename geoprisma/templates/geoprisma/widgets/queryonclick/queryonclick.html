@@ -1,5 +1,6 @@
 {% load object_extras %}
 {% load i18n %}
+{% load url from future %}
 <script type="text/javascript">
     // QueryOnClick
     var aResources = [];
@@ -7,8 +8,8 @@
         {% with wmsDatastore=widgetResource|args:"wms"|call:"getDatastoreByType" wfsDatastore=widgetResource|args:"featureserver"|call:"getDatastoreByType" %}
         oResource = {
             wms: {'queryLayers': "{{wmsDatastore.layers}}",
-                    'service': "{{wmsDatastore.service.id}}",
-                    'url': baseUrl + 'proxy.php',
+                    'service': "{{wmsDatastore.service.slug}}",
+                    'url': '{% url 'geoprisma:proxyurl' %}',
                 {% if wmsDatastore.service %}
                 {% with serviceVersion=appSession|args:wmsDatastore.service|args:"version"|call:"getObjectOption" %}
                 {% if serviceVersion %}'version': '{{serviceVersion}}',{% endif %}
@@ -19,12 +20,13 @@
                 {% endif %}
                     'dataStoreText': {% if wmsDatastore.text %}{{wmsDatastore.text}}{%else%}''{% endif %}},
             wfs: {'typename': "{{wfsDatastore.layers}}",
-                    'service': "{{wfsDatastore.service.id}}",
-                    'url': baseUrl + 'proxy.php',
+                    'service': "{{wfsDatastore.service.slug}}",
+                    'url': '{% url 'geoprisma:proxyurl' %}',
                     'dataStoreText': {% if wfsDatastore.text %}{{wfsDatastore.text}}{%else%}''{% endif %}},
             'session_name': 'sessionid',
             'session_id':     '{{request.COOKIES.sessionid}}',
             'resource': "{{widgetResource.id}}",
+            'resource_slug': "{{widgetResource.slug.lower}}",
             'resourceTitle': "{{widgetResource.display_name|default:widgetResource.name}}",
             {% with resourcePrimaryField=widgetResource|args:"primaryField"|call:"getOption" %}
             {% if resourcePrimaryField %}'resourcePrimaryField': '{{resourcePrimaryField}}',{% endif %}
@@ -38,10 +40,10 @@
     strTitle = "{%trans "Click on the map to get information on queryable layers" %}";
     var strReset = '{{ widget|args:"resetOnDeactivation"|call:"getOption"|default:"" }}';
     strReset = (strReset == '') ? 'marker' : strReset;
-    
+
     var bNoMarker = '{{ widget|args:"noMarker"|call:"getOption"|default:"" }}';
     bNoMarker = (bNoMarker == 'true') ? true : false;
-    
+
     var objMarkerStyle;
     {% with markerStyleOption=widget|args:"markerStyle"|call:"getOption" %}
     {% if markerStyleOption %}
@@ -62,7 +64,7 @@
         {% with displayClassOption=widget|args:"displayClass"|call:"getOption" %}{% if displayClassOption %}displayClass: '{{displayClassOption}}',{% endif %}{% endwith %}
         resources: aResources
     });
-    
+
     {# GeoExt.Action object for the geoexttoolbar START #}
     aoMenuItems = [];
     {# Text for the arrow menu #}
@@ -77,11 +79,11 @@
             aoMenuItems.push({'text': oResource.resource});
         }
     }
-    
+
     {# get dropDownList #}
     {% with dropDownListOption=widget|args:"dropDownList"|call:"getOption" %}
     {% with iconClsOption=widget|args:"iconCls"|call:"getOption" %}
-    
+
     objAction = new GeoExt.Action({
         {% if iconClsOption %}iconCls: '{{iconClsOption}}',{% else %}iconCls: 'queryonclick',{% endif %}
         control: objGPWidget{{widget.id}},
@@ -99,7 +101,7 @@
         {% endif %}
         group: oMap.id
     });
-    
+
     {# Widget Object creation  #}
     {% if dropDownListOption == "false" %}
       objGPWidget{{widget.id}}GeoExtToolbarOptions = objAction;

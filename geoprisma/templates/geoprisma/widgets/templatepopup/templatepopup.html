@@ -1,25 +1,26 @@
 {% load object_extras %}
 {% load i18n %}
+{% load url from future %}
 <script type="text/javascript">
     var templates = [];
     var layers = [];
     var osmresource = [];
     var resourceParams = [];
     var hasTemplate = false;
-    
+
     {% with serviceNameOption=widget|args:"serviceName"|call:"getOption" %}
-  
+
     {# Loop through all resources #}
-    {% for resource in resources %}   
-    
+    {% for resource in resources %}
+
     {% with resourceTemplate=resource|args:"templatepopup"|call:"getOption" %}
-      
+
     {% with resourceDatastore=resource|args:"wms"|call:"getDatastoreByType" %}
       {% if  resourceDatastore.service.id == serviceNameOption  %}
         {% if resourceTemplate %}
           var templatePopupLayers = objGPWidget{{mapName}}.getLayersByResource('{{resource.id}}', 'wms');
           var templatePopup = "{{resourceTemplate|escapejs}}";
-          
+
           osmresource.push('{{resource.id}}');
           resourceParams.push("&osmresource[]={{resource.id}}");
 
@@ -43,7 +44,7 @@
         {% endif %}
        {% endif %}
       {% endwith %}
-      {% endwith %} 
+      {% endwith %}
     {% endfor %}
      var configOptions = {{ widget.printOptions }};
 
@@ -59,23 +60,22 @@
 
         configOptions = Ext.applyIf(configOptions, defaultConfigOptions);
         configOptions = Ext.applyIf({
-        
+
           {% with iconClsOption=widget|args:"iconCls"|call:"getOption" %}
             {% if iconClsOption %}
               iconCls: '{{iconClsOption}}',
             {% else %}
               text: '{{ widget|args:"title"|call:"getOption"|default:"" }}',
             {% endif %}
-          {% endwith %}  
-            
+          {% endwith %}
+
             {% with templateService=appSession|args:serviceNameOption|call:"getServiceById" %}
             mode: '{{templateService.type.name.lower|default:"wms"}}',
-            {% endwith %}
             map: objGPWidget{{mapName}},
             tpl: templates,
             layers: layers,
-            url: baseUrl + 'proxy.php?osmservice={{serviceNameOption}}'+resourceParams.join(''),
-
+            url: '{% url 'geoprisma:proxyurl' %}/{{templateService.slug}}?templatepopup'+resourceParams.join(''),
+            {% endwith %}
             toggleGroup: objGPWidget{{mapName}}.id,
             tooltip: '{{ widget|args:"title"|call:"getOption"|default:"" }}',
             group: objGPWidget{{mapName}}.id
@@ -83,16 +83,16 @@
 
         var customBubble = new GeoExt.TemplatePopup(configOptions);
 
-        
+
         {% with autoEnableOption=widget|args:"autoEnable"|call:"getOption" %}
             {% if autoEnableOption %}
               // Do not add the button if autoEnable
             {% else %}
               var objGPWidget{{widget.type.name.lower}}GeoExtToolbarOptions = customBubble;
             {% endif %}
-          {% endwith %}   
+          {% endwith %}
 
-        
+
         {% with controlLayerOption=widget|args:"controlLayer"|call:"getOption" %}
           {% if controlLayerOption %}
           customBubble.control.events.on({

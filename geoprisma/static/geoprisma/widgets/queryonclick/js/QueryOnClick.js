@@ -1,7 +1,7 @@
-/* 
+/*
    Copyright (c) 2009- Boreal - Information Strategies, published under the BSD license.
-   See http://geoprisma.org/license for the full text of the license. 
-*/ 
+   See http://geoprisma.org/license for the full text of the license.
+*/
 /**
  * @requires OpenLayers/Handler/Click.js
  */
@@ -25,7 +25,7 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
 
     /**
      * Constant: DEFAULT_PARAMS
-     * {Object} Hashtable of default parameter key/value pairs 
+     * {Object} Hashtable of default parameter key/value pairs
      */
     DEFAULT_PARAMS: {
         VERSION: "1.0.0",
@@ -36,19 +36,19 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
         STYLES: "",
         FEATURE_COUNT: 1000
     },
-    
+
     /*
         const: i18n_wait_options_msg
-        {String} Wait msg        
+        {String} Wait msg
     */
-    i18n_wait_options_msg : "Query in progress, please wait...", 
-    
+    i18n_wait_options_msg : "Query in progress, please wait...",
+
     /*
         const: i18n_wait_options_progress_text
-        {String} Wait progress text        
+        {String} Wait progress text
     */
-    i18n_wait_options_progress_text : "Loading...", 
-    
+    i18n_wait_options_progress_text : "Loading...",
+
     /*
         const: i18n_wait_options_completed_text
         {String} Completed :
@@ -63,28 +63,28 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
 
     /*
         const: i18n_no_layer_queryable
-        {String} No layer is queryable       
+        {String} No layer is queryable
     */
-    i18n_no_layer_queryable : "No layer currently queryable.", 
-    
+    i18n_no_layer_queryable : "No layer currently queryable.",
+
     /*
         const: i18n_warning
-        {String} Warning text       
+        {String} Warning text
     */
-    i18n_warning : "Warning", 
-    
+    i18n_warning : "Warning",
+
     /*
         const: i18n_message_no_result_msg
-        {String} No result message       
+        {String} No result message
     */
-    i18n_message_no_result_msg : "No record found.", 
-    
+    i18n_message_no_result_msg : "No record found.",
+
         /*
         const: i18n_message_no_result_title
         {String} No result title
     */
-    i18n_message_no_result_title : "No record found", 
-    
+    i18n_message_no_result_title : "No record found",
+
     /**
      * Property: APIProperty: drawMode
      * {string}
@@ -249,7 +249,7 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
      * APIProperty: multiple
      * {Boolean} Allow selection of multiple features.  Default is false.
      */
-    multiple: false, 
+    multiple: false,
 
     /**
      * APIProperty: toggle
@@ -338,11 +338,11 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
                 if(oResource[szServiceType].queryLayers == szLayer){
                     return oResource.resource;
                 }
-                break;    
+                break;
               case "wfs":
                 if(oResource[szServiceType].typename == szLayer){
                     return oResource.resource;
-                }               
+                }
                 break;
               default:
                 // unsuported
@@ -390,7 +390,7 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
     /**
      * Method: onClick
      * Called by this click handler when the user click the map.
-     * 
+     *
      * First, the current query data is reset and all result panels are reset
      * too.  Second, each resources are validated : is there a layer currently
      * visible that has the resource ?  Third, all queryable resource builds a
@@ -410,7 +410,7 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
         this.lastEvt = evt;
 
         var lonlat = this.map.getLonLatFromPixel(evt.xy);
-        
+
         /**
          * RESOURCE VALIDATION
          * First, browse each resource.  If a layer that has the resource is
@@ -427,7 +427,7 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
                 continue;
             }
 
-            // check if the resource is queryable, i.e. is 
+            // check if the resource is queryable, i.e. is
             if(!oResource.queryable || !oResource['wms']){
                 continue;
             }
@@ -450,10 +450,10 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
 
                 // If the layer is WMS or MapServer, we must also validate
                 // that the layer is currently in the params.LAYERS
-                // property.  If not, it means that it's not currently 
+                // property.  If not, it means that it's not currently
                 // visible
                 if(OpenLayers.Util.indexOf(
-                       this.queryablelayertypes, oLayer.CLASS_NAME) != -1 && 
+                       this.queryablelayertypes, oLayer.CLASS_NAME) != -1 &&
 		   oLayer.serviceType == "wms"){
                     var oParam = OpenLayers.Util.upperCaseObject(
                         oLayer.params);
@@ -474,16 +474,16 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
                             bLayerFound = true;
                             break;
                         }
-                    }           
+                    }
                 } else { // layer is not WMS or MapServer, no need to check more
                     bLayerFound = true;
                     break;
                 }
             }
-       
+
             if(!bLayerFound){
                 continue;
-            }          
+            }
 
             this.resourcestoquery.push(oResource);
         }
@@ -512,12 +512,10 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
         // load each query
         for (var i=0, len = this.resourcestoquery.length; i<len; i++){
             var oResource = this.resourcestoquery[i];
-            
-            var szURL = oResource['wms'].url;
+
+            var szURL = oResource['wms'].url+"/"+oResource['wms'].service+"/"+oResource.resource_slug;
 
             var objParams = {
-                osmresource: oResource.resource,
-                osmservice: oResource['wms'].service,
                 QUERY_LAYERS: oResource['wms'].queryLayers,
                 LAYERS: oResource['wms'].queryLayers,
                 SRS: this.map.getProjection(),
@@ -541,7 +539,7 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
             }
 
             OpenLayers.Util.applyDefaults(
-                objParams, 
+                objParams,
                 OpenLayers.Util.upperCaseObject(this.DEFAULT_PARAMS)
             );
 
@@ -557,7 +555,7 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
                 var strSeparator = (szURL.indexOf('?') > -1) ? '&' : '?';
                 szURL += strSeparator + strParams;
             }
-            
+
             this.getFeaturesResource[oResource.resource] = new Function("response","this.getFeatures(response,'"+oResource.resource+"');");
 
             OpenLayers.Request.GET({
@@ -572,7 +570,7 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
 
     /**
      * Method: getFeatures
-     * Retreive the features from the query response and add them to 
+     * Retreive the features from the query response and add them to
      * this.features.  The number of result received is incremented
      * (this.queries).  When the last result is received, the method showResult
      * is called.
@@ -593,13 +591,13 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
                 feature = oFeatures[i];
                 feature.resource = resource;
                 if (oResource.resourcePrimaryField) {
-                    feature.fid = feature.type + "." + 
+                    feature.fid = feature.type + "." +
                             feature.attributes[oResource.resourcePrimaryField];
-                    
+
                 }
                 var pushFeature = feature.fid === null;
                 if (!pushFeature) {
-                    var existingFeature = 
+                    var existingFeature =
                         this.getFeatureByResourceAndFid(resource, feature.fid);
                     if (existingFeature) {
                         if (this.modifiers.toggle) {
@@ -727,7 +725,7 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
             this.showMessage(szTitle, szMessage);
             return;
         }
- 
+
         if(this.noMarker !== true) {
             this.markerLayer.addFeatures([this.marker]);
         }
@@ -738,7 +736,7 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
                 this.features, this.htmlResults, {'modifiers': this.modifiers});
         }
         this.hideWaitMessageBox();
-		
+
         // execute each feature panels
         for(var i=0, len=this.featurepanels.length; i<len; i++){
             this.featurepanels[i].showFeaturePanel(this.features);
@@ -797,7 +795,7 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
     updateProgressBar: function() {
         var nCurrent = this.queries;
         var nCount = this.resourcestoquery.length;
-        var szMessage =  this.i18n_wait_options_completed_text + nCurrent + 
+        var szMessage =  this.i18n_wait_options_completed_text + nCurrent +
             this.i18n_wait_options_of_text  + nCount + '...';
 
         var oProgressBar = Ext.getCmp('queryonclick-pbar');
@@ -843,7 +841,7 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
     /**
      * Method: setModifiers
      * Sets the multiple modifiers according to the current event
-     * 
+     *
      * Parameters:
      * evt {<OpenLayers.Event>}
      */
@@ -851,7 +849,7 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
         this.modifiers = {
             multiple: this.multiple || (this.multipleKey && evt[this.multipleKey]),
             toggle: this.toggle || (this.toggleKey && evt[this.toggleKey])
-        };        
+        };
     },
 
     /**
@@ -899,7 +897,7 @@ OpenLayers.Control.QueryOnClick = OpenLayers.Class(OpenLayers.Control, {
     /**
      * Method: showMessage
      * Display a Ext.MessageBox and hide it after 2 seconds.
-     * 
+     *
      * Parameters:
      * title   - {String} Title of the message
      * message - {String} The message

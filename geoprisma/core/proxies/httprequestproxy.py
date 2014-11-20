@@ -21,11 +21,33 @@ class HttpRequestProxy(proxy.Proxy):
             service: Object service
             prequest: La requete
         """
-        self.m_objService = service
-        self.m_objRequest = prequest
-        self.m_objResource = []
+        super(HttpRequestProxy, self).__init__(service, prequest)
         self.m_strRequestName = ""
-        self.m_objArrayAvailableRequestsAction = []
+        self.m_objArrayAvailableRequestsAction = {}
+        self.m_objArrayResponseMetaINfo = []
+
+        if not self.m_objRequest.GET.get('REQUEST'):
+            raise Exception("REQUEST param is missing")
+
+        self.m_strRequestName = self.m_objRequest.GET.get('REQUEST')
+
+        for availableRequest in self.m_objService.serviceoption_set.filter(name="createHttpRequests").values_list('value', flat=True)[0].split(","):
+            self.m_objArrayAvailableRequestsAction[availableRequest] = self.CRUD_CREATE
+        for availableRequest in self.m_objService.serviceoption_set.filter(name="readHttpRequests").values_list('value', flat=True)[0].split(","):
+            self.m_objArrayAvailableRequestsAction[availableRequest] = self.CRUD_READ
+        for availableRequest in self.m_objService.serviceoption_set.filter(name="updateHttpRequests").values_list('value', flat=True)[0].split(","):
+            self.m_objArrayAvailableRequestsAction[availableRequest] = self.CRUD_UPDATE
+        for availableRequest in self.m_objService.serviceoption_set.filter(name="deleteHttpRequests").values_list('value', flat=True)[0].split(","):
+            self.m_objArrayAvailableRequestsAction[availableRequest] = self.CRUD_DELETE
+
+        if len(self.m_objArrayAvailableRequestsAction) == 0:
+            raise Exception(" Service has no available request")
+
+        if not self.m_objArrayAvailableRequestsAction.get(self.m_strRequestName):
+            raise Exception("Request has no available action")
+
+    def getAction(self):
+        return self.m_objArrayAvailableRequestsAction.get(self.m_strRequestName)
 
     def process(self):
         """
@@ -91,5 +113,3 @@ class HttpRequestProxy(proxy.Proxy):
             return pstrUrl+"&"+urllib.urlencode(dict(self.getRequestParams(), **pstrAdditionalParams))
         else:
             return pstrUrl+"?"+urllib.urlencode(dict(self.getRequestParams(), **pstrAdditionalParams))
-
-

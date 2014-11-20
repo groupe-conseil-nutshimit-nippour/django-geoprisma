@@ -1,6 +1,7 @@
 {% load widget_extras %}
 {% load i18n %}
 {% load object_extras %}
+{% load url from future %}
 <script type="text/javascript">
     var objGPWidget{{widget.id}} = {
       xtype: 'datafieldrecenter',
@@ -9,28 +10,28 @@
       title: "{% trans "Recenter" %}",
       bodyStyle: 'padding: 7px;',
 
-       
-    {%with defaultzoomOption=widget|args:"defaultzoom"|call:"getOption"%}         
+
+    {%with defaultzoomOption=widget|args:"defaultzoom"|call:"getOption"%}
         {% if defaultzoomOption %}
         defaultZoom: {{defaultzoomOption}},
-        {% endif %}   
+        {% endif %}
     {%endwith%}
-      
+
       {% with resourceDatastore=widget.resource|args:"featureserver"|call:"getDatastoreByType" %}
-      url: baseUrl + 'proxy.php/{{resourceDatastore.layers}}?osmresource[]={{widget.resource.id}}&osmservice={{resourceDatastore.service.id}}',
+      url: '{% url 'geoprisma:proxyurl' %}/{{resourceDatastore.service.slug}}/{{widget.resource.slug.lower}}/{{resourceDatastore.layers}}',
       {% endwith %}
       map: oMap,
       border: false,
-    
-    {%with mincharsOption=widget|args:"minchars"|call:"getOption"%}     
+
+    {%with mincharsOption=widget|args:"minchars"|call:"getOption"%}
         {% if mincharsOption %}
           minChars: {{mincharsOption}},
         {% else %}
           minChars: 0,
         {% endif %}
     {%endwith%}
-    
-    {%with maxcharsOption=widget|args:"maxchars"|call:"getOption"%} 
+
+    {%with maxcharsOption=widget|args:"maxchars"|call:"getOption"%}
         {% if maxcharsOption %}
           maxChars: {{maxcharsOption}},
         {% else %}
@@ -45,4 +46,4 @@
       displayField: '{% for field in widgetFields %}{{field.displayfield}};{% endfor %}'
     };
     {% endwith %}
-</script> 
+</script>

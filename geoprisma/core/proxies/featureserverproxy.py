@@ -5,29 +5,40 @@ from django.http import HttpResponse
 
 
 class FeatureServerProxy(proxy.Proxy):
-    PATH_INFO_REG = '/^\/([a-zA-Z0-9_]+)\/?(([0-9]*|all)\.?(GeoJSON|json|kml|atom|gml)?)$/i'
-    PATH_INFO_LAYER_POS = 1
-    PATH_INFO_ID_POS  = 3
+
+    def __init__(self, pobjService, prequest, pkwargs=None):
+        """
+        Constructeur
+
+        Args:
+            pobjService: Object service
+            prequest: La requete
+            pkwargs: request kwargs
+        """
+        super(FeatureServerProxy, self).__init__(pobjService, prequest)
+        if pkwargs:
+            self.kwargs = pkwargs
 
     def getLayer(self):
-        strPathInfo = self.getPathInfo()
-        objMatches = re.search(self.PATH_INFO_REG, strPathInfo)
-        if objMatches:
-            return objMatches.group(self.PATH_INFO_LAYER_POS)
+        if self.kwargs.get('layer'):
+            return self.kwargs.get('layer')
         else:
             return ''
 
 
     def getID(self):
-        strPathInfo = self.getPathInfo()
-        objMatches = re.search(self.PATH_INFO_REG, strPathInfo)
-        if objMatches and len(objMatches) >= self.PATH_INFO_ID_POS:
-            dataId = objMatches.group(self.PATH_INFO_ID_POS)
+        if self.kwargs.get('data_id'):
+            dataId = self.kwargs.get('data_id')
             if dataId.isdigit():
                 return int(dataId)
         else:
             return None
 
+    def getPathInfo(self):
+        strPath = "/"+self.getLayer()
+        if self.kwargs.get('data_id'):
+            strPath += "/"+str(self.getID())
+        return strPath
 
     def getLayers(self):
         objLayerList = []
@@ -43,7 +54,7 @@ class FeatureServerGetCapabilityProxy(FeatureServerProxy):
         return self.CRUD_READ
 
     def process(self):
-        url = self.addParam(self.self.m_objService.source)
+        url = self.addParam(self.m_objService.source)
         requestUrl = requests.post(url)
         return HttpResponse(requestUrl)
 
@@ -55,7 +66,7 @@ class FeatureServerReadProxy(FeatureServerProxy):
 
     def process(self):
         strPathInfo = self.getPathInfo()
-        url = self.addParam(self.self.m_objService.source + strPathInfo)
+        url = self.addParam(self.m_objService.source + strPathInfo)
         requestUrl = requests.get(url)
         return HttpResponse(requestUrl)
 
@@ -67,7 +78,7 @@ class FeatureServerCreateProxy(FeatureServerProxy):
 
     def process(self):
         strPathInfo = self.getPathInfo()
-        url = self.addParam(self.mm_objService.source + strPathInfo)
+        url = self.addParam(self.m_objService.source + strPathInfo)
         requestUrl = requests.post(url, data=self.m_objRequest.body)
         return HttpResponse(requestUrl)
 
@@ -80,7 +91,7 @@ class FeatureServerUpdateProxy(FeatureServerProxy):
 
     def process(self):
         strPathInfo = self.getPathInfo()
-        url = self.addParam(self.mm_objService.source + strPathInfo)
+        url = self.addParam(self.m_objService.source + strPathInfo)
         requestUrl = requests.put(url , data=self.m_objRequest.body)
         return HttpResponse(requestUrl)
 
@@ -92,7 +103,7 @@ class FeatureServerDeleteProxy(FeatureServerProxy):
 
     def process(self):
         strPathInfo = self.getPathInfo()
-        url = self.addParam(self.mm_objService.source + strPathInfo)
+        url = self.addParam(self.m_objService.source + strPathInfo)
         requestUrl = requests.delete(url)
         return HttpResponse(requestUrl)
 
@@ -102,20 +113,23 @@ class FeatureServerProxyFactory(object):
     Retourne le bon feature server proxy
     """
 
-    def getFeatureServerProxy(self, pobjService, prequest):
+    def getFeatureServerProxy(self, pobjService, prequest, pkwargs=None):
         self.request = prequest
-        self.featureServerProxy = FeatureServerProxy(pobjService, prequest)
+        self.featureServerProxy = FeatureServerProxy(pobjService, prequest, pkwargs)
+        objFeatureServerProxy = None
 
         if self.isGetCapability():
-            return FeatureServerGetCapabilityProxy(pobjService, prequest)
+            objFeatureServerProxy = FeatureServerGetCapabilityProxy(pobjService, prequest, pkwargs)
         elif self.isDelete():
-            return FeatureServerDeleteProxy(pobjService, prequest)
+            objFeatureServerProxy = FeatureServerDeleteProxy(pobjService, prequest, pkwargs)
         elif self.isUpdate():
-            return FeatureServerUpdateProxy(pobjService, prequest)
+            objFeatureServerProxy = FeatureServerUpdateProxy(pobjService, prequest, pkwargs)
         elif self.isCreate():
-            return FeatureServerCreateProx(pobjService, prequest)
+            objFeatureServerProxy = FeatureServerCreateProx(pobjService, prequest, pkwargs)
         else:
-            return FeatureServerReadProxy(pobjService, prequest)
+            objFeatureServerProxy = FeatureServerReadProxy(pobjService, prequest, pkwargs)
+
+        return objFeatureServerProxy
 
 
 
@@ -140,4 +154,4 @@ class FeatureServerProxyFactory(object):
 
     def isUpdate(self):
         data_id = self.featureServerProxy.getID()
-        return data_id != None and request.method == "PUT"
+        return data_id != None and self.request.method == "PUT"

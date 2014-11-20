@@ -8,10 +8,10 @@ from fileproxy import *
 from featureserverproxy import *
 
 
-def getProxy(service_slug, request):
+def getProxy(service_slug, request, kwargs):
     """
     Va recuperer le bon proxy selon le service.
-    
+
     Args:
         service_slug: Le slug du service
         request: La requete
@@ -31,10 +31,9 @@ def getProxy(service_slug, request):
     elif objService.type.name == "File":
         objProxy = FileProxyFactory().getFileProxy(objService, request)
     elif objService.type.name  == "FeatureServer":
-        objProxy = FeatureServerProxyFactory().getFeatureServerProxy(objService, request)
+        objProxy = FeatureServerProxyFactory().getFeatureServerProxy(objService, request, kwargs)
 
     if not objProxy:
         return "no proxy"
     else:
         return objProxy
- 

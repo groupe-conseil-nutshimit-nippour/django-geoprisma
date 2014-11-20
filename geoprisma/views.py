@@ -62,7 +62,7 @@ def get_proxy(request, *args, **kwargs):
     resource_slug = kwargs.get('resource_slug')
 
     if service_slug:
-        proxy = getproxy.getProxy(service_slug, request)
+        proxy = getproxy.getProxy(service_slug, request, kwargs)
         if resource_slug:
             proxy.getResourcesFromRequest(kwargs)
             proxy.validateResourcesFromRequest()
@@ -217,12 +217,3 @@ def maprender(request, pwsName=None, pviewId=None, *args, **kwargs):
                    }
 
     return renderContext
-
-
-
-
-
-
-
-
-

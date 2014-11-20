@@ -80,8 +80,9 @@ class Layer(WidgetBase):
         var objArrayURLParams = [];
           objArrayURLParams.push();
           objArrayURLAliases = [strDjangoURL];
-          var strParams = '"""+self.datastore.service.slug+"""/"""+self.resource.slug.lower()+"""';
+          var strParams = '/"""+self.datastore.service.slug+"""/"""+self.resource.slug.lower()+"""';
           if(strParams.length > 0) {
+              strDjangoURL += strParams;
               for(var i=0; i<objArrayURLAliases.length; i++){
                   var strSeparator = (objArrayURLAliases[i].indexOf('?') > -1) ? '&' : '?';
                   objArrayURLAliases[i] += strParams;
@@ -118,4 +119,3 @@ class Layer(WidgetBase):
             strParams += 'objParams["typename"] = "'+self.getOption("typename")+'";'
 
         return mark_safe(strParams)
-

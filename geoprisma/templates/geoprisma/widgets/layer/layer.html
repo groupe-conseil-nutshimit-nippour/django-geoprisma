@@ -1,23 +1,23 @@
 {% load i18n %}
 {% load object_extras %}
+{% load url from future %}
 <script type="text/javascript">
     var mapPanel = objGPWidgetMapPanel{{mapName}};
     var map = mapPanel.map;
-    
-    var strURL = baseUrl + 'proxy.php';
-    var strDjangoURL = baseUrl + 'gp/proxy/';
+
+    var strDjangoURL = '{% url 'geoprisma:proxyurl' %}';
     var strURLAliases = "";
     var boolURLAliasesEnabled = (strURLAliases != '');
     var objArrayURLAliases, strSeparator;
-    
+
     if(boolURLAliasesEnabled) {
         strSeparator = ' ';
         objArrayURLAliases = strURLAliases.split(strSeparator);
     } else {
-        objArrayURLAliases = [strURL];
+        objArrayURLAliases = [strDjangoURL];
     }
     {% with resource=widget.resource %}
-    {% with resourceNoLayerOption=resource|args:"noLayer"|call:"getOption"  %} 
+    {% with resourceNoLayerOption=resource|args:"noLayer"|call:"getOption"  %}
     {% if not resourceNoLayerOption %}
         {# WMS #}
         {% if widget.datastore.service.type.name.lower == "wms" %}
@@ -81,15 +81,14 @@
         {% elif widget.datastore.service.type.name.lower == "featureserver" %}
             {% if widget.datastore.service.name != "" %}
                 {# url #}
-                {{ widget.printLayerURL }}
-                var aszURLArray = strURL.split("?");
-                strURL = aszURLArray[0]+"/{{widget.datastore.layers}}?"+aszURLArray[1];
+                {{ widget.printLayerDjangoURL }}
+                strDjangoURL += "/{{widget.datastore.layers}}";
                 {# options #}
                 {{ widget.getOpenLayersOptions }}
                 objOptions.resources = ['{{resource.id}}'];
                 objOptions.strategies.push (new OpenLayers.Strategy.BBOX());
                 objOptions.protocol = new OpenLayers.Protocol.HTTP({
-                    url: strURL,
+                    url: strDjangoURL,
                     params: {
                         format: "GeoJSON",
                         service: "WFS",
@@ -99,17 +98,17 @@
                     },
                     format: new OpenLayers.Format.GeoJSON()
                 });
-                
+
                 {# STYLEMAP #}
                 {% with stylemapOption=widget|args:"stylemap"|call:"getOption" %}
                 {% if stylemapOption %}
                     objOptions["styleMap"] = new OpenLayers.StyleMap({});
-                    
+
                     {# STYLES #}
-                    
+
                 {% endif %}
                 {%  endwith %}
-            
+
                 objLayer = new OpenLayers.Layer.Vector(
                     "{{resource.display_name|default:resource.name}}",
                     objOptions
@@ -121,15 +120,14 @@
             {% if widget.datastore.service.name != "" %}
                 var objProtocolOptions = {};
                 {# url #}
-                {{ widget.printLayerURL }}
-                var aszURLArray = strURL.split("?");
-                strURL = aszURLArray[0]+"/{{widget.datastore.layers}}?"+aszURLArray[1];
+                {{ widget.printLayerDjangoURL }}
+                strDjangoURL += "/{{widget.datastore.layers}}";
                 {# options #}
                 {{ widget.getOpenLayersOptions }}
                 objOptions.resources = ['{{resource.id}}'];
                 objOptions.strategies.push (new OpenLayers.Strategy.BBOX());
                 objOptions.protocol = new OpenLayers.Protocol.WFS({
-                    url: strURL,
+                    url: strDjangoURL,
                     version: objOptions["version"] ? objOptions["version"] : undefined,
                     srsName: objOptions["projectionString"] ? objOptions["projectionString"] : undefined,
                     featureType: "{{widget.datastore.layers}}",
@@ -137,17 +135,17 @@
                     featurePrefix: objOptions["featurePrefix"] ? objOptions["featurePrefix"] : undefined,
                     geometryName: objOptions["geometryName"] ? objOptions["geometryName"] : undefined
                 });
-                
+
                 {# STYLEMAP #}
                 {% with stylemapOption=widget|args:"stylemap"|call:"getOption" %}
                 {% if stylemapOption %}
                     objOptions["styleMap"] = new OpenLayers.StyleMap({});
-                    
+
                     {# STYLES #}
-                    
+
                 {% endif %}
                 {%  endwith %}
-                
+
                 objLayer = new OpenLayers.Layer.Vector(
                     "{{resource.display_name|default:resource.name}}",
                     objOptions
@@ -199,8 +197,8 @@
                     type: "png" {# default value if not set #}
                 });
                 {# url #}
-                {{ widget.printLayerURL }}
-                
+                {{ widget.printLayerDjangoURL }}
+
                 if (objArrayURLAliases instanceof Array) {
                     for(var key in objArrayURLAliases) {
                         objArrayURLAliases[key] =  OpenLayers.Util.urlAppend(objArrayURLAliases[key], "TMSRequest=");
