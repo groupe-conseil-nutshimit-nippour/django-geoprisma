@@ -99,7 +99,7 @@ class WMSProxy(proxy.Proxy):
         Returns:
             HttpResponce
         """
-        excluded_headers = ('connection','keep-alive','proxy-authenticate','proxy-authorization','te','trailers','transfer-encoding','content-encoding','upgrade')
+        excluded_headers = ('connection','keep-alive','proxy-authenticate','proxy-authorization','te','trailers','transfer-encoding','content-encoding','content-length','upgrade')
 
         if self.m_objRequest.method == "POST":
             strServiceURL = self.m_objService.source
