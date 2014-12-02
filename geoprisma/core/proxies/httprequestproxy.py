@@ -31,14 +31,22 @@ class HttpRequestProxy(proxy.Proxy):
 
         self.m_strRequestName = self.m_objRequest.GET.get('REQUEST')
 
-        for availableRequest in self.m_objService.serviceoption_set.filter(name="createHttpRequests").values_list('value', flat=True)[0].split(","):
-            self.m_objArrayAvailableRequestsAction[availableRequest] = self.CRUD_CREATE
-        for availableRequest in self.m_objService.serviceoption_set.filter(name="readHttpRequests").values_list('value', flat=True)[0].split(","):
-            self.m_objArrayAvailableRequestsAction[availableRequest] = self.CRUD_READ
-        for availableRequest in self.m_objService.serviceoption_set.filter(name="updateHttpRequests").values_list('value', flat=True)[0].split(","):
-            self.m_objArrayAvailableRequestsAction[availableRequest] = self.CRUD_UPDATE
-        for availableRequest in self.m_objService.serviceoption_set.filter(name="deleteHttpRequests").values_list('value', flat=True)[0].split(","):
-            self.m_objArrayAvailableRequestsAction[availableRequest] = self.CRUD_DELETE
+        createHttpRequests = self.m_objService.serviceoption_set.filter(name="createHttpRequests").values_list('value', flat=True)
+        readHttpRequests = self.m_objService.serviceoption_set.filter(name="readHttpRequests").values_list('value', flat=True)
+        updateHttpRequests = self.m_objService.serviceoption_set.filter(name="updateHttpRequests").values_list('value', flat=True)
+        deleteHttpRequests = self.m_objService.serviceoption_set.filter(name="deleteHttpRequests").values_list('value', flat=True)
+        if len(createHttpRequests) > 0:
+            for availableRequest in createHttpRequests[0].split(","):
+                self.m_objArrayAvailableRequestsAction[availableRequest] = self.CRUD_CREATE
+        if len(readHttpRequests) > 0:
+            for availableRequest in readHttpRequests[0].split(","):
+                self.m_objArrayAvailableRequestsAction[availableRequest] = self.CRUD_READ
+        if len(updateHttpRequests) > 0:
+            for availableRequest in updateHttpRequests[0].split(","):
+                self.m_objArrayAvailableRequestsAction[availableRequest] = self.CRUD_UPDATE
+        if len(deleteHttpRequests) > 0:
+            for availableRequest in deleteHttpRequests[0].split(","):
+                self.m_objArrayAvailableRequestsAction[availableRequest] = self.CRUD_DELETE
 
         if len(self.m_objArrayAvailableRequestsAction) == 0:
             raise Exception(" Service has no available request")
