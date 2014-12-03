@@ -227,8 +227,10 @@ class WFSReadProxy(WFSProxy):
                 except Exception:
                     raise Exception("CSV Error")
                 try:
-                    if self.m_objService.options['utf8Decode'] == "true":
-                        responce.content.utf8Decode()
+                    utf8DecodeOption = self.m_objService.serviceoption_set.filter(name='utf8Decode').values_list('value', flat=True)
+                    if len(utf8DecodeOption) > 0:
+                        if utf8DecodeOption[0] == "true":
+                            responce.content.utf8Decode()
                 except Exception:
                     raise Exception("Utf-8 decode error.")
             return responce
