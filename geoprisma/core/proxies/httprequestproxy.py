@@ -98,6 +98,8 @@ class HttpRequestProxy(proxy.Proxy):
         #    os.unlink(strFilepath)
 
         responce = HttpResponse(requestUrl)
+        responce.status_code = requestUrl.status_code
+        responce.reason_phrase = requestUrl.reason
         for header in requestUrl.headers:
             if header not in excluded_headers:
                 responce[header] = requestUrl.headers.get(header)
