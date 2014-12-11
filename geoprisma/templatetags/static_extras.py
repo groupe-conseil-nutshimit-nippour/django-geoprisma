@@ -3,11 +3,12 @@ register = template.Library()
 import os.path
 from django.template.defaultfilters import stringfilter
 
+
 @register.assignment_tag
 def getJsStatics(widgetTypeSet):
     static_list = []
-    STATIC_DIR =  os.path.abspath(os.path.join(os.path.dirname(__file__),"../static/geoprisma/widgets"))
-    for dirpath,dirnames,filenames in os.walk(STATIC_DIR):
+    STATIC_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../static/geoprisma/widgets"))
+    for dirpath, dirnames, filenames in os.walk(STATIC_DIR):
         for widgetType in widgetTypeSet:
             if widgetType in dirpath:
                 if not "geoextux_redliningpanel" in dirpath and \
@@ -20,21 +21,22 @@ def getJsStatics(widgetTypeSet):
                         splitDirpath = dirpath.split("/")
                         joinIndex = ""
                         try:
-                            joinIndex =  splitDirpath.index("widgets")
+                            joinIndex = splitDirpath.index("widgets")
                         except ValueError:
                             joinIndex = ""
                         if joinIndex != "":
                             dirpath = "/".join(splitDirpath[joinIndex:len(splitDirpath)])
                             splitFileName = filename.split(".")
-                            if splitFileName[-1] == "js" :
-                                static_list.append("geoprisma/"+ dirpath + "/" +  filename)
+                            if splitFileName[-1] == "js":
+                                static_list.append("geoprisma/" + dirpath + "/" + filename)
     return static_list
+
 
 @register.assignment_tag
 def getCssStatics(widgetTypeSet):
     static_list = []
-    STATIC_DIR =  os.path.abspath(os.path.join(os.path.dirname(__file__),"../static/geoprisma/widgets"))
-    for dirpath,dirnames,filenames in os.walk(STATIC_DIR):
+    STATIC_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../static/geoprisma/widgets"))
+    for dirpath, dirnames, filenames in os.walk(STATIC_DIR):
         for widgetType in widgetTypeSet:
             if widgetType in dirpath:
                 if not "featurepanel_selector" in dirpath:
@@ -42,15 +44,16 @@ def getCssStatics(widgetTypeSet):
                         splitDirpath = dirpath.split("/")
                         joinIndex = ""
                         try:
-                            joinIndex =  splitDirpath.index("widgets")
+                            joinIndex = splitDirpath.index("widgets")
                         except ValueError:
                             joinIndex = ""
                         if joinIndex != "":
                             dirpath = "/".join(splitDirpath[joinIndex:len(splitDirpath)])
                             splitFileName = filename.split(".")
-                            if splitFileName[-1] == "css" :
-                                static_list.append("geoprisma/"+ dirpath + "/" +  filename)
+                            if splitFileName[-1] == "css":
+                                static_list.append("geoprisma/" + dirpath + "/" + filename)
     return static_list
+
 
 @register.filter
 @stringfilter

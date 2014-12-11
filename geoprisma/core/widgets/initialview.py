@@ -49,4 +49,3 @@ class InitialView(WidgetBase):
             return requestUrl.text
         else:
             return False
-

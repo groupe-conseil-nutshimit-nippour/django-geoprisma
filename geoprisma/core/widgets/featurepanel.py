@@ -2,6 +2,7 @@ from widgetbase import WidgetBase
 from geoprisma.utils import isAuthorized
 from geoprisma.models import WidgetType
 
+
 class FeaturePanel_CustomForm(WidgetBase):
 
     def linkResource(self, user, resourceList):
@@ -22,7 +23,7 @@ class FeaturePanel_Selector(WidgetBase):
         widgetClone.id = str(resource.id)+"_FPSClone"
         widgetClone.name = resource.name+"_FPSClone"
         widgetClone.type = WidgetType(name="featurepanel_selector")
-        widgetClone.options  = {}
+        widgetClone.options = {}
         widgetClone.options["fields"] = self.setFields(resource.fields)
         widgetClone.fields = resource.fields
         widgetClone.resource = resource

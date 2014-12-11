@@ -21,7 +21,16 @@ class TileCacheProxy(proxy.Proxy):
         Returns:
             HttpResponce
         """
-        excluded_headers = ('connection','keep-alive','proxy-authenticate','proxy-authorization','te','trailers','transfer-encoding','upgrade','content-encoding','content-length')
+        excluded_headers = ('connection',
+                            'keep-alive',
+                            'proxy-authenticate',
+                            'proxy-authorization',
+                            'te',
+                            'trailers',
+                            'transfer-encoding',
+                            'upgrade',
+                            'content-encoding',
+                            'content-length')
 
         if self.m_objRequest.GET.get("staticCache"):
             strRequestURL = self.addParam(self.m_objService.source).replace("?staticCache", "")
@@ -57,4 +66,3 @@ class TileCacheProxy(proxy.Proxy):
             objArrayLayer.append(objArrayPathInfo[1])
 
         return objArrayLayer
-

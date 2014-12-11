@@ -68,7 +68,13 @@ class FileProxyFactory(object):
         Returns:
             bool: True si l'operation est un upload
         """
-        return True if prequest.REQUEST.get('cmd') == 'upload' and prequest.REQUEST.get('path') != '' and prequest.FILES.get('x-filename') != '' and prequest.REQUEST.get('dir') != '' else False
+        if (prequest.REQUEST.get('cmd') == 'upload' and
+                prequest.REQUEST.get('path') != '' and
+                prequest.FILES.get('x-filename') != '' and
+                prequest.REQUEST.get('dir') != ''):
+            return True
+        else:
+            return False
 
     def isNewDir(self, prequest):
         """
@@ -234,7 +240,10 @@ class FileTree(object):
             JSON
         """
         strFilePath = self.m_strRootPath+'/'+pstrFilePath
-        if not self.m_strRootPath or not os.path.isdir(self.m_strRootPath) or os.path.isfile(strFilePath) or not os.path.isdir(strFilePath):
+        if (not self.m_strRootPath or
+                not os.path.isdir(self.m_strRootPath) or
+                os.path.isfile(strFilePath) or
+                not os.path.isdir(strFilePath)):
             return '[]'
         if pobjArrayFileList.__len__() <= 0:
             pobjArrayFileList = self.getFileList(strFilePath)
@@ -489,7 +498,9 @@ class FileGetProxy(FileProxy):
         """
         strFilePath = self.getLayer()
         objFileTree = FileTree(self.m_objService.source)
-        return HttpResponse(objFileTree.get(strFilePath, self.m_objArrayAvailableLayers, self.m_objArrayAvailableResources))
+        return HttpResponse(objFileTree.get(strFilePath,
+                                            self.m_objArrayAvailableLayers,
+                                            self.m_objArrayAvailableResources))
 
     def getInlineLayers(self):
         """

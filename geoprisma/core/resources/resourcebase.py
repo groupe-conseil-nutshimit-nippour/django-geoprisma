@@ -2,6 +2,7 @@ import json
 import copy
 from django.utils.safestring import mark_safe
 
+
 class ResourceBase(object):
 
     def __init__(self, resourceModel):
@@ -15,21 +16,20 @@ class ResourceBase(object):
         self.fields = resourceModel.fields.all()
         self.widgets = []
 
-
     def setOptions(self, options):
         optionDic = {}
         for option in options:
-            if optionDic.has_key(option.name):
-                if isinstance(optionDic[option.name],list):
+            if option.name in optionDic:
+                if isinstance(optionDic[option.name], list):
                     optionDic[option.name].append(self.castOption(option.value))
                 else:
-                    optionDic[option.name] = [optionDic[option.name],self.castOption(option.value)]
+                    optionDic[option.name] = [optionDic[option.name], self.castOption(option.value)]
             else:
                 optionDic[option.name] = self.castOption(option.value)
         # Ajout un "s" au option contenant une liste
         # pour eviter les problemes avec le javascript
         for key in optionDic.keys():
-            if isinstance(optionDic[key],list):
+            if isinstance(optionDic[key], list):
                 plurial_key = key+"s"
                 optionDic[plurial_key] = optionDic.pop(key)
         return optionDic
@@ -38,7 +38,7 @@ class ResourceBase(object):
         """
         Fonction qui change le type de l'option selon ca valeur
         """
-        if isinstance(option,str) or isinstance(option,unicode):
+        if isinstance(option, str) or isinstance(option, unicode):
             if option.isdigit():
                 return int(option)
             elif option == "true":
@@ -52,9 +52,9 @@ class ResourceBase(object):
 
     def getOption(self, optionName):
         try:
-            if self.options[optionName] == True:
+            if self.options[optionName] is True:
                 return "true"
-            elif self.options[optionName] == False:
+            elif self.options[optionName] is False:
                 return "false"
             return self.options[optionName]
         except KeyError:
@@ -77,4 +77,4 @@ class ResourceBase(object):
             return False
 
     def addWidget(self, widget):
-        self.widgets.append(widget);
+        self.widgets.append(widget)

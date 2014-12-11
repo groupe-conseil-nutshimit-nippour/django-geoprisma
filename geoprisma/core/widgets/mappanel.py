@@ -1,6 +1,7 @@
 from widgetbase import WidgetBase
 from geoprisma.models import WidgetType
 
+
 class MapPanel(WidgetBase):
     """
     MapPanel
@@ -11,4 +12,3 @@ class MapPanel(WidgetBase):
         self.type = WidgetType(name="mappanel")
         self.action = "read"
         self.options = self.setOptions(widgetModel.mapcontextoption_set.all())
-        

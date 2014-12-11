@@ -30,7 +30,7 @@ def getProxy(service_slug, request, kwargs):
         objProxy = WFSProxyFactory().getWFSProxy(objService, request)
     elif objService.type.name == "File":
         objProxy = FileProxyFactory().getFileProxy(objService, request)
-    elif objService.type.name  == "FeatureServer":
+    elif objService.type.name == "FeatureServer":
         objProxy = FeatureServerProxyFactory().getFeatureServerProxy(objService, request, kwargs)
 
     if not objProxy:

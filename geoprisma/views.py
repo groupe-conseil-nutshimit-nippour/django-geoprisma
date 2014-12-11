@@ -44,6 +44,7 @@ def http_basic_auth(func):
         return func(request, *args, **kwargs)
     return _decorator
 
+
 @http_basic_auth
 @login_required
 @csrf_exempt
@@ -72,7 +73,7 @@ def get_proxy(request, *args, **kwargs):
     return HttpResponse('')
 
 
-def getAuthorizedResources(user,mapcontextresources):
+def getAuthorizedResources(user, mapcontextresources):
     """
     Recupere les actions authorises des resources
 
@@ -93,6 +94,7 @@ def getAuthorizedResources(user,mapcontextresources):
                 authorizedResourcesAclNameDic[mapcontextresource.resource.acl_name] = mapcontextresource.resource.id
 
     return json.dumps(authorizedResourcesActionsDic), json.dumps(authorizedResourcesAclNameDic)
+
 
 @login_required
 def maprender(request, pwsName=None, pviewId=None, *args, **kwargs):
@@ -134,7 +136,8 @@ def maprender(request, pwsName=None, pviewId=None, *args, **kwargs):
     # Defini l'url de base pour le proxy en php
     baseUrl = "/"
 
-    authorizedResourcesActions, authorizedResourcesAclName = getAuthorizedResources(user,session.mapContext.mapcontextresource_set.all())
+    authorizedResourcesActions, authorizedResourcesAclName = getAuthorizedResources(user,
+                                                                                    session.mapContext.mapcontextresource_set.all())
 
     #Cree l'objet session qui va gerer la recuperation de widget
     appSession = AppSession()
@@ -150,7 +153,7 @@ def maprender(request, pwsName=None, pviewId=None, *args, **kwargs):
     # Boucle dans les resources pour les initialiser
     for mapContextResource in session.mapContext.mapcontextresource_set.all():
         #Verifie le droit de lecture sur la resource
-        if isAuthorized(user,mapContextResource.resource.name, "read"):
+        if isAuthorized(user, mapContextResource.resource.name, "read"):
             #Ajoute la resource a la liste des resources
             resource = ResourceBase(mapContextResource.resource)
             appSession.resourceList.append(resource)
@@ -176,8 +179,8 @@ def maprender(request, pwsName=None, pviewId=None, *args, **kwargs):
                 appSession.widgetTypeSet.add("resultvectorlayer")
                 for subwidget in widgetList:
                     if subwidget.type.name.lower() == "geoexttoolbar":
-                        subwidget.options["widgets"].insert(0,"__separator__")
-                        subwidget.options["widgets"].insert(0,"W_MyQueryOnClick")
+                        subwidget.options["widgets"].insert(0, "__separator__")
+                        subwidget.options["widgets"].insert(0, "W_MyQueryOnClick")
                         break
             appSession.widgetTypeSet.add(widget.type.name.lower())
 
@@ -189,7 +192,9 @@ def maprender(request, pwsName=None, pviewId=None, *args, **kwargs):
                 if not resource.getDatastoreByType("TileCache") and not resource.getDatastoreByType("TMS"):
                     layerWidget = Layer(resource, "WMS")
                     layerList.append(layerWidget)
-            elif datastore.service.type.name == "TileCache" or datastore.service.type.name == "GYMO" or datastore.service.type.name == "TMS":
+            elif datastore.service.type.name == "TileCache" \
+                    or datastore.service.type.name == "GYMO" \
+                    or datastore.service.type.name == "TMS":
                 layerWidget = Layer(resource, datastore.service.type.name)
                 layerList.append(layerWidget)
             elif datastore.service.type.name == "FeatureServer" or datastore.service.type.name == "WFS":
@@ -201,19 +206,18 @@ def maprender(request, pwsName=None, pviewId=None, *args, **kwargs):
     appSession.widgetList.extend(layerList)
     appSession.widgetList.extend(widgetList)
 
-    renderContext = {'widgets':appSession.widgetList,
-                   'widgetTypeSet':appSession.widgetTypeSet,
-                   'resources':appSession.resourceList,
-                   'appSession':appSession,
-                   'mapName':session.mapContext.name,
-                   'wsName':session.name,
-                   'viewId':viewId,
-                   'templateName':session.application.template,
-                   'authorizedActions': authorizedResourcesActions,
-                   'authorizedResourcesAclName': authorizedResourcesAclName,
-                   'drawMode':session.application.type.name.lower(),
-                   'baseUrl':baseUrl,
-                   'user': user
-                   }
+    renderContext = {'widgets': appSession.widgetList,
+                     'widgetTypeSet': appSession.widgetTypeSet,
+                     'resources': appSession.resourceList,
+                     'appSession': appSession,
+                     'mapName': session.mapContext.name,
+                     'wsName': session.name,
+                     'viewId': viewId,
+                     'templateName': session.application.template,
+                     'authorizedActions': authorizedResourcesActions,
+                     'authorizedResourcesAclName': authorizedResourcesAclName,
+                     'drawMode': session.application.type.name.lower(),
+                     'baseUrl': baseUrl,
+                     'user': user}
 
     return renderContext

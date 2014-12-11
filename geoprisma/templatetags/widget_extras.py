@@ -7,7 +7,7 @@ register = template.Library()
 def printWidgetOptionss(options):
     """
     Construit un tableau de clef:valeur pour l'affichage javascript
-    
+
     Args:
         options: Liste d'option
     Returns:
@@ -33,15 +33,16 @@ def printWidgetOptionss(options):
         else:
             strOptions += '"' + option.name + '":' + printOptionByType(option.value)
             if i < len(options):
-                strOptions +=',\n'
+                strOptions += ',\n'
                 i += 1
     strOptions += '}'
     return strOptions
 
+
 def regroupOptionsByName(options):
     """
     Regroupe les option d'une liste par nom
-    
+
     Args:
         options: La liste d'option
     Returns:
@@ -57,11 +58,12 @@ def regroupOptionsByName(options):
         else:
             groupedOptions.append(groups[key].pop())
     return groupedOptions
-        
+
+
 def printOptionByType(option):
     """
     Format l'option selon son type
-    
+
     Args:
         option: L'option
     Returns:
@@ -70,7 +72,4 @@ def printOptionByType(option):
     if option.isdigit() or option == "true" or option == "false":
         return option
     else:
-        return '"'+ option.replace("\"","'") +'"'
-    
-
-
+        return '"' + option.replace("\"", "'") + '"'

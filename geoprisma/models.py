@@ -4,13 +4,12 @@ from django.contrib.gis.db import models as geomodels
 from django.template.defaultfilters import slugify
 
 
-
 #Dummy decorator if schema is not supported
 def schematize(original_class):
         return original_class
 
 #Import model that support PGSQL schema if difined
-if hasattr(settings,'SCHEMATIZED_MODELS'):
+if hasattr(settings, 'SCHEMATIZED_MODELS'):
         try:
                 models = __import__(settings.SCHEMATIZED_MODELS, fromlist=['*'])
                 schematize = models.schematize
@@ -51,6 +50,7 @@ class ServiceManager(models.Manager):
     def getService(self, slug):
         return self.model.objects.get(slug=slug)
 
+
 @schematize
 class Service(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -80,7 +80,7 @@ class Service(models.Model):
 class ServiceOption(models.Model):
     service = models.ForeignKey(Service)
     name = models.CharField(max_length=255)
-    value = models.TextField( null=True, blank=True)
+    value = models.TextField(null=True, blank=True)
 
     class Meta:
         ordering = ('name',)
@@ -88,11 +88,12 @@ class ServiceOption(models.Model):
     def __unicode__(self):
         return self.name
 
+
 @schematize
 class Datastore(models.Model):
     service = models.ForeignKey(Service)
     name = models.CharField(max_length=255, unique=True)
-    layers = models.CharField(max_length=255,null=True)
+    layers = models.CharField(max_length=255, null=True)
     commentaire = models.TextField(null=True, blank=True)
 
     class Meta:
@@ -106,7 +107,7 @@ class Datastore(models.Model):
 class DatastoreOption(models.Model):
     datastore = models.ForeignKey(Datastore)
     name = models.CharField(max_length=255)
-    value = models.TextField( null=True, blank=True)
+    value = models.TextField(null=True, blank=True)
 
     class Meta:
         ordering = ('name',)
@@ -134,7 +135,7 @@ class Field(models.Model):
 class FieldOption(models.Model):
     field = models.ForeignKey(Field)
     name = models.CharField(max_length=255)
-    value = models.TextField( null=True, blank=True)
+    value = models.TextField(null=True, blank=True)
 
     class Meta:
         ordering = ('name',)
@@ -148,7 +149,6 @@ class AccessFilter(models.Model):
     name = models.CharField(max_length=255, unique=True)
     commentaire = models.TextField(null=True, blank=True)
 
-
     def __unicode__(self):
         return self.name
 
@@ -157,8 +157,7 @@ class AccessFilter(models.Model):
 class AccessFilterOption(models.Model):
     accessfilter = models.ForeignKey(AccessFilter)
     name = models.CharField(max_length=255)
-    value = models.TextField( null=True, blank=True)
-
+    value = models.TextField(null=True, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -172,10 +171,10 @@ class ResourceManager(models.Manager):
 @schematize
 class Resource(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    acl_name = models.CharField(max_length=255,null=True, blank=True, db_column='acl_name')
-    key = models.CharField(max_length=255,null=True, blank=True)
-    domain = models.CharField(max_length=255,null=True, blank=True)
-    datastores = models.ManyToManyField(Datastore, db_table= 'geoprisma_resourcedatastore')
+    acl_name = models.CharField(max_length=255, null=True, blank=True, db_column='acl_name')
+    key = models.CharField(max_length=255, null=True, blank=True)
+    domain = models.CharField(max_length=255, null=True, blank=True)
+    datastores = models.ManyToManyField(Datastore, db_table='geoprisma_resourcedatastore')
     accessfilters = models.ManyToManyField(AccessFilter, null=True, blank=True, through='ResourceAccessfilter')
     fields = models.ManyToManyField(Field, through='ResourceField')
     slug = models.SlugField(max_length=255, unique=True, null=True)
@@ -225,6 +224,7 @@ class ResourceField(models.Model):
     def __unicode__(self):
         return self.field.name
 
+
 @schematize
 class ResourceAccessfilter(models.Model):
     resource = models.ForeignKey(Resource)
@@ -233,11 +233,12 @@ class ResourceAccessfilter(models.Model):
     def __unicode__(self):
         return self.accessfilter.name
 
+
 @schematize
 class ResourceOption(models.Model):
     resource = models.ForeignKey(Resource)
     name = models.CharField(max_length=255)
-    value = models.TextField( null=True, blank=True)
+    value = models.TextField(null=True, blank=True)
     key = models.CharField(max_length=255, null=True, blank=True)
     domain = models.CharField(max_length=255, null=True, blank=True)
 
@@ -280,7 +281,7 @@ class Widget(models.Model):
 class WidgetOption(models.Model):
     widget = models.ForeignKey(Widget)
     name = models.CharField(max_length=255)
-    value = models.TextField( null=True, blank=True)
+    value = models.TextField(null=True, blank=True)
     order = models.IntegerField(null=True, blank=True)
 
     class Meta:
@@ -321,7 +322,7 @@ class MapContext(models.Model):
 class MapContextOption(models.Model):
     mapContext = models.ForeignKey(MapContext, db_column='mapcontext_id')
     name = models.CharField(max_length=255)
-    value = models.TextField( null=True, blank=True)
+    value = models.TextField(null=True, blank=True)
 
     class Meta:
         ordering = ('name',)
@@ -424,6 +425,7 @@ class Session(models.Model):
 
     def __unicode__(self):
         return self.name
+
 
 @schematize
 class InitialView(models.Model):

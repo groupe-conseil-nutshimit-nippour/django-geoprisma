@@ -1,6 +1,7 @@
 from geoprisma.utils import isAuthorized
 from widgetbase import WidgetBase
 
+
 class Toggle(WidgetBase):
 
     def linkResource(self, user, resourceList):

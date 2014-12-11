@@ -29,6 +29,7 @@ try:
 except ImportError:
     from django.conf.urls.defaults import patterns
 
+
 # Si le parametre 'parenthesis' est a True, le nombre est rajoute entre parenthese (X)
 # Sinon, il est rajoute apres un tiret -X
 
@@ -45,13 +46,14 @@ def get_duplicate_name_field(model, field, initial_value, parenthesis=True):
             else:
                 resource_name_duplicate = resource_name_init + '-' + str(numCopie)
 
-            args = {field:resource_name_duplicate}
+            args = {field: resource_name_duplicate}
             model.objects.get(**args)
             numCopie += 1
         except ObjectDoesNotExist:
             boucleNumCopie = False
 
-    return resource_name_duplicate;
+    return resource_name_duplicate
+
 
 # Actions
 def dupliquer_les_resources(modeladmin, request, queryset):
@@ -70,27 +72,27 @@ def dupliquer_les_resources(modeladmin, request, queryset):
 
         # copy M2M relationship: 'datastores', 'accessfilters', 'fields', 'ResourceOption'
         for datastore in resource.datastores.all():
-               resource_copy.datastores.add(datastore)
+            resource_copy.datastores.add(datastore)
         resource_copy.save()
 
         for accessfilter in resource.accessfilters.all():
-               ra = ResourceAccessfilter(resource=resource_copy,
-                                         accessfilter=accessfilter)
-               ra.save()
+            ra = ResourceAccessfilter(resource=resource_copy,
+                                      accessfilter=accessfilter)
+            ra.save()
 
         for ressfield in ResourceField.objects.filter(resource=resource):
-               rf = ResourceField(resource=resource_copy,
-                                  field=ressfield.field,
-                                  order=ressfield.order)
-               rf.save()
+            rf = ResourceField(resource=resource_copy,
+                               field=ressfield.field,
+                               order=ressfield.order)
+            rf.save()
 
         for ress_opt in ResourceOption.objects.filter(resource=resource):
-               ro = ResourceOption(resource=resource_copy,
-                             name=ress_opt.name,
-                             value=ress_opt.value,
-                             key=ress_opt.key,
-                             domain=ress_opt.domain)
-               ro.save()
+            ro = ResourceOption(resource=resource_copy,
+                                name=ress_opt.name,
+                                value=ress_opt.value,
+                                key=ress_opt.key,
+                                domain=ress_opt.domain)
+            ro.save()
 
 
 def dupliquer_les_mapcontext(modeladmin, request, queryset):
@@ -108,16 +110,16 @@ def dupliquer_les_mapcontext(modeladmin, request, queryset):
 
         # copy M2M relationship: 'MapContextOption', 'MapContextResource'
         for mapc_opt in MapContextOption.objects.filter(mapContext=mapcontext):
-               mo = MapContextOption(mapContext=mapcontext_copy,
-                                     name=mapc_opt.name,
-                                     value=mapc_opt.value)
-               mo.save()
+            mo = MapContextOption(mapContext=mapcontext_copy,
+                                  name=mapc_opt.name,
+                                  value=mapc_opt.value)
+            mo.save()
 
         for mapc_ress in MapContextResource.objects.filter(mapContext=mapcontext):
-               mr = MapContextResource(mapContext=mapcontext_copy,
-                                        resource=mapc_ress.resource,
-                                        order=mapc_ress.order)
-               mr.save()
+            mr = MapContextResource(mapContext=mapcontext_copy,
+                                    resource=mapc_ress.resource,
+                                    order=mapc_ress.order)
+            mr.save()
 
 
 def dupliquer_les_datastores(modeladmin, request, queryset):
@@ -135,11 +137,10 @@ def dupliquer_les_datastores(modeladmin, request, queryset):
 
         # copy M2M relationship: 'DatastoreOption'
         for d_opt in DatastoreOption.objects.filter(datastore=datastore):
-               do = DatastoreOption(datastore=datastore_copy,
-                                     name=d_opt.name,
-                                     value=d_opt.value)
-               do.save()
-
+            do = DatastoreOption(datastore=datastore_copy,
+                                 name=d_opt.name,
+                                 value=d_opt.value)
+            do.save()
 
 
 def dupliquer_les_applications(modeladmin, request, queryset):
@@ -157,10 +158,11 @@ def dupliquer_les_applications(modeladmin, request, queryset):
 
         # copy M2M relationship: 'ApplicationWidget'
         for a_wid in ApplicationWidget.objects.filter(application=application):
-               aw = ApplicationWidget(application=application_copy,
-                                     widget=a_wid.widget,
-                                     order=a_wid.order)
-               aw.save()
+            aw = ApplicationWidget(application=application_copy,
+                                   widget=a_wid.widget,
+                                   order=a_wid.order)
+            aw.save()
+
 
 # Inlines
 class DefaultLayerOptionInline(admin.TabularInline):
@@ -254,7 +256,6 @@ class ResourceAdmin(TranslationAdmin):
     actions = [dupliquer_les_resources]
 
 
-
 class FieldAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
@@ -278,13 +279,11 @@ class WidgetAdmin(admin.ModelAdmin):
     inlines = (WidgetOptionInline,)
 
 
-
 class MapContextAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
     inlines = (MapContextOptionInline, MapContextResourceInline)
     actions = [dupliquer_les_mapcontext]
-
 
 
 class ApplicationTypeAdmin(admin.ModelAdmin):
@@ -299,11 +298,11 @@ class ApplicationAdmin(admin.ModelAdmin):
     actions = [dupliquer_les_applications]
 
 
-
 class SessionAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
     pass  # do not remove this class
+
 
 class InitialViewAdmin(GeoModelAdmin):
     ordering = ['name', ]

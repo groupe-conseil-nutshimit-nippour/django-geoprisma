@@ -25,7 +25,6 @@ class FeatureServerProxy(proxy.Proxy):
         else:
             return ''
 
-
     def getID(self):
         if self.kwargs.get('data_id'):
             dataId = self.kwargs.get('data_id')
@@ -83,7 +82,6 @@ class FeatureServerCreateProxy(FeatureServerProxy):
         return HttpResponse(requestUrl)
 
 
-
 class FeatureServerUpdateProxy(FeatureServerProxy):
 
     def getAction(self):
@@ -92,7 +90,7 @@ class FeatureServerUpdateProxy(FeatureServerProxy):
     def process(self):
         strPathInfo = self.getPathInfo()
         url = self.addParam(self.m_objService.source + strPathInfo)
-        requestUrl = requests.put(url , data=self.m_objRequest.body)
+        requestUrl = requests.put(url, data=self.m_objRequest.body)
         return HttpResponse(requestUrl)
 
 
@@ -131,9 +129,6 @@ class FeatureServerProxyFactory(object):
 
         return objFeatureServerProxy
 
-
-
-
     def isGetCapability(self):
         """
         Check if query is the type of getCapability | The layer is not specifield
@@ -141,17 +136,14 @@ class FeatureServerProxyFactory(object):
         strLayer = self.featureServerProxy.getLayer()
         return strLayer == ""
 
-
     def isDelete(self):
         data_id = self.featureServerProxy.getID()
-        return data_id != None and self.request.method == "DELETE"
-
+        return data_id is not None and self.request.method == "DELETE"
 
     def isCreate(self):
         data_id = self.featureServerProxy.getID()
-        return data_id != None and self.request.body != "" and self.request.method == "POST"
-
+        return data_id is not None and self.request.body != "" and self.request.method == "POST"
 
     def isUpdate(self):
         data_id = self.featureServerProxy.getID()
-        return data_id != None and self.request.method == "PUT"
+        return data_id is not None and self.request.method == "PUT"

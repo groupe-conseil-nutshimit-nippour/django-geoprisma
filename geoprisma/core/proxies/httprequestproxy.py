@@ -65,7 +65,16 @@ class HttpRequestProxy(proxy.Proxy):
             HttpResponce
         """
         strAdditionalParams = {}
-        excluded_headers = ('connection','keep-alive','proxy-authenticate','proxy-authorization','te','trailers','transfer-encoding','upgrade','content-encoding','content-length')
+        excluded_headers = ('connection',
+                            'keep-alive',
+                            'proxy-authenticate',
+                            'proxy-authorization',
+                            'te',
+                            'trailers',
+                            'transfer-encoding',
+                            'upgrade',
+                            'content-encoding',
+                            'content-length')
         objPostFields = self.m_objRequest.body
         objArrayLayers = []
         objArrayTmpFiles = []

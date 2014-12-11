@@ -18,7 +18,7 @@ def isAuthorized(user, ress_name, action_name):
 
     """
     #Import model that support PGSQL schema if difined
-    if hasattr(settings,'ACL_UTILS'):
+    if hasattr(settings, 'ACL_UTILS'):
         try:
             utils = __import__(settings.ACL_UTILS, fromlist=['*'])
             return utils.isAuthorized(user, ress_name, action_name)

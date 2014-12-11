@@ -9,7 +9,7 @@ def schematize(original_class):
         return original_class
 
 #Import model that support PGSQL schema if difined
-if hasattr(settings,'SCHEMATIZED_MODELS'):
+if hasattr(settings, 'SCHEMATIZED_MODELS'):
         try:
                 models = __import__(settings.SCHEMATIZED_MODELS, fromlist=['*'])
                 schematize = models.schematize
@@ -17,6 +17,7 @@ if hasattr(settings,'SCHEMATIZED_MODELS'):
                 from django.db import models
 else:
         from django.db import models
+
 
 @schematize
 class Action(models.Model):
@@ -29,6 +30,7 @@ class Action(models.Model):
 
     def __unicode__(self):
         return self.name
+
 
 @schematize
 class Right(models.Model):

@@ -2,6 +2,7 @@ import json
 import re
 from django.utils.safestring import mark_safe
 
+
 class WidgetBase(object):
     """
     Classe de base pour les widgets
@@ -34,18 +35,18 @@ class WidgetBase(object):
         """
         optionDic = {}
         for option in options:
-            if optionDic.has_key(option.name):
-                if isinstance(optionDic[option.name],list):
+            if option.name in optionDic:
+                if isinstance(optionDic[option.name], list):
                     optionDic[option.name].append(self.castOption(option.value))
                 else:
-                    optionDic[option.name] = [optionDic[option.name],self.castOption(option.value)]
+                    optionDic[option.name] = [optionDic[option.name], self.castOption(option.value)]
             else:
                 optionDic[option.name] = self.castOption(option.value)
 
         # Ajout un "s" au option contenant une liste
         # pour eviter les problemes avec le javascript
         for key in optionDic.keys():
-            if isinstance(optionDic[key],list):
+            if isinstance(optionDic[key], list):
                 plurial_key = key+"s"
                 optionDic[plurial_key] = optionDic.pop(key)
 
@@ -82,9 +83,9 @@ class WidgetBase(object):
             Valeur de l'option
         """
         try:
-            if self.options[optionName] == True:
+            if self.options[optionName] is True:
                 return "true"
-            elif self.options[optionName] == False:
+            elif self.options[optionName] is False:
                 return "false"
             return self.options[optionName]
         except KeyError:
@@ -106,18 +107,18 @@ class WidgetBase(object):
         for key, val in self.options.items():
             if key == "projectionString":
                 strOptions += "objOptions['projection'] = new OpenLayers.Projection(\"" + val + "\"); \n"
-            elif key =="maxExtentString":
-                strOptions += "objOptions['maxExtent'] = new OpenLayers.Bounds("+ val +"); \n"
+            elif key == "maxExtentString":
+                strOptions += "objOptions['maxExtent'] = new OpenLayers.Bounds(" + val + "); \n"
             elif key == "restrictedExtentString":
-                strOptions += "objOptions['restrictedExtent'] = new OpenLayers.Bounds("+ val +"); \n"
+                strOptions += "objOptions['restrictedExtent'] = new OpenLayers.Bounds(" + val + "); \n"
             elif key == "tileSizeString":
-                strOptions += "objOptions['tileSize'] = new OpenLayers.Size("+ val +"); \n"
+                strOptions += "objOptions['tileSize'] = new OpenLayers.Size(" + val + "); \n"
             elif key == "displayProjectionString":
-                strOptions += "objOptions['displayProjection'] = new OpenLayers.Projection(\""+ val +"\"); \n"
+                strOptions += "objOptions['displayProjection'] = new OpenLayers.Projection(\"" + val + "\"); \n"
             elif key == "resolutionsString":
-                strOptions += "objOptions['resolutions'] = ["+val+"]; \n"
+                strOptions += "objOptions['resolutions'] = [" + val + "]; \n"
             elif key == "scalesString":
-                strOptions += "objOptions['scales'] = ["+ val +"]; \n"
+                strOptions += "objOptions['scales'] = [" + val + "]; \n"
             elif key == "cluster":
                 strOptions += "objOptions['strategies'].push(new OpenLayers.Strategy.Cluster()); \n"
         return mark_safe(strOptions)
@@ -142,10 +143,9 @@ class WidgetBase(object):
         Args:
             resource: La resource ou on recupere l'option
         """
-        for key,val in self.getMandatoryResourceOptions().items():
+        for key, val in self.getMandatoryResourceOptions().items():
             if resource.getOption(key):
                 self.options[val] = resource.options[key]
-
 
     def getFormatfromTxt(self, strMsg):
         pattern = re.compile('EPSG:\d+\#?(.*)')
@@ -154,11 +154,9 @@ class WidgetBase(object):
             return matches.group(1)
         return ""
 
-
     def getDisplayProjectionfromTxt(self, strMsg):
         pattern = re.compile('(EPSG:\d+)\#?.*')
         matches = pattern.search(strMsg)
         if matches:
             return matches.group(1)
         return ""
-

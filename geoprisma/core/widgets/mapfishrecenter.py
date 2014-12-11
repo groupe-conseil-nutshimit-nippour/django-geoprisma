@@ -3,6 +3,7 @@ from widgetbase import WidgetBase
 from geoprisma.utils import isAuthorized
 from geoprisma.models import WidgetType
 
+
 class MapFishRecenter(WidgetBase):
 
     def hasClones(self):
@@ -21,7 +22,6 @@ class MapFishRecenter(WidgetBase):
                     widgetClone.options["fields"] = self.setFields(resource.fields)
                     widgetClone.resource = resource
                     self.widgetCloneList.append(widgetClone)
-
 
     def setFields(self, fields):
         fieldList = []

@@ -153,7 +153,8 @@ class WFSProxy(proxy.Proxy):
         objArrayLayers = []
         if self.m_iRequestType == self.REQUEST_TYPE_POSTXML:
             objDomDoc = ET.fromstring(self.m_strPostRequest)
-            objArrayXPathResult = objDomDoc.findall('./wfs:GetFeature/wfs:Query/[@typeName]', namespaces=dict(wfs='http://www.opengis.net/wfs'))
+            objArrayXPathResult = objDomDoc.findall('./wfs:GetFeature/wfs:Query/[@typeName]',
+                                                    namespaces=dict(wfs='http://www.opengis.net/wfs'))
             if objArrayXPathResult:
                 strTypeNames = str(objArrayXPathResult[0].tag)
                 strTok = strTypeNames.split(',')
@@ -191,7 +192,16 @@ class WFSReadProxy(WFSProxy):
         Returns:
             HttpResponce
         """
-        excluded_headers = ('connection','keep-alive','proxy-authenticate','proxy-authorization','te','trailers','transfer-encoding','upgrade','content-encoding','content-length')
+        excluded_headers = ('connection',
+                            'keep-alive',
+                            'proxy-authenticate',
+                            'proxy-authorization',
+                            'te',
+                            'trailers',
+                            'transfer-encoding',
+                            'upgrade',
+                            'content-encoding',
+                            'content-length')
 
         if self.m_iRequestType == self.REQUEST_TYPE_POSTXML:
             strPostRequest = self.m_strPostRequest
@@ -262,7 +272,16 @@ class WFSGetCapabilityProxy(WFSProxy):
         Returns:
             HttpResponce
         """
-        excluded_headers = ('connection','keep-alive','proxy-authenticate','proxy-authorization','te','trailers','transfer-encoding','upgrade','content-encoding','content-length')
+        excluded_headers = ('connection',
+                            'keep-alive',
+                            'proxy-authenticate',
+                            'proxy-authorization',
+                            'te',
+                            'trailers',
+                            'transfer-encoding',
+                            'upgrade',
+                            'content-encoding',
+                            'content-length')
         url = self.addParam(self.m_objService.source)
         requestUrl = requests.get(url)
         objXml = ET.fromstring(requestUrl.text.encode("utf-8"))
@@ -289,16 +308,17 @@ class WFSGetCapabilityProxy(WFSProxy):
                         for dcptype in dcptypelist:
                             http = dcptype.find("{http://www.opengis.net/wfs}HTTP")
                             for method in http:
-                                method.set("onlineResource",onlineResourceUrl)
+                                method.set("onlineResource", onlineResourceUrl)
                 if elem.tag == "{http://www.opengis.net/wfs}FeatureTypeList":
                     for featureType in elem:
                         if featureType.tag == "{http://www.opengis.net/wfs}FeatureType":
                             featureTypeName = featureType.find("{http://www.opengis.net/wfs}Name")
                             try:
-                                datastore = Datastore.objects.get(service=self.m_objService, layers=featureTypeName.text)
+                                datastore = Datastore.objects.get(service=self.m_objService,
+                                                                  layers=featureTypeName.text)
                                 dataResourceList = datastore.resource_set.all()
                                 for resource in dataResourceList:
-                                    if isAuthorized(user, resource.name,"read"):
+                                    if isAuthorized(user, resource.name, "read"):
                                         break
                                     else:
                                         removeList.append(featureType)
@@ -314,7 +334,7 @@ class WFSGetCapabilityProxy(WFSProxy):
                     for operation in elem:
                         httptag = operation.find("{http://www.opengis.net/ows}DCP").find("{http://www.opengis.net/ows}HTTP")
                         for method in httptag:
-                            method.set("{http://www.w3.org/1999/xlink}href",onlineResourceUrl)
+                            method.set("{http://www.w3.org/1999/xlink}href", onlineResourceUrl)
                 if elem.tag == "{http://www.opengis.net/wfs}FeatureTypeList":
                     for featureType in elem:
                         if featureType.tag == "{http://www.opengis.net/wfs}FeatureType":
@@ -324,7 +344,7 @@ class WFSGetCapabilityProxy(WFSProxy):
                                 datastore = Datastore.objects.get(service=self.m_objService, layers=featureTypeNameText)
                                 dataResourceList = datastore.resource_set.all()
                                 for resource in dataResourceList:
-                                    if isAuthorized(user, resource.name,"read"):
+                                    if isAuthorized(user, resource.name, "read"):
                                         break
                                     else:
                                         removeList.append(featureType)
@@ -344,9 +364,3 @@ class WFSGetCapabilityProxy(WFSProxy):
     def getAction(self):
         #return self.CRUD_READ
         pass
-
-
-
-
-
-

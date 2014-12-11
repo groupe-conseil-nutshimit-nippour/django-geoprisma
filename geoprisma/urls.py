@@ -6,7 +6,6 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-
     url(r'^$', views.get_proxy),
     url(r'^proxy$', views.get_proxy, name="proxyurl"),
     url(r'^proxy/(?P<service_slug>[\w-]+)$', views.get_proxy),

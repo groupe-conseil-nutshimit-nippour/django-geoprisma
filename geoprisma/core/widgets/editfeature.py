@@ -19,6 +19,7 @@ class EditFeature_Confirm(WidgetBase):
                     self.resources.append(resource)
                     resource.addWidget(self)
 
+
 class EditFeature_Copy(WidgetBase):
 
     def getServiceType(self):
@@ -42,6 +43,7 @@ class EditFeature_Copy(WidgetBase):
                     elif editTypeOption == "copy" or not editTypeOption:
                         self.resources.append(resource)
                         resource.addWidget(self)
+
 
 class EditFeature_Create(WidgetBase):
 
@@ -70,7 +72,7 @@ class EditFeature_Create(WidgetBase):
         self.widgetCloneList = []
         for resource in resourceList:
             if resource.getOption("editable") == "true":
-                if isAuthorized(user,resource.name, self.action):
+                if isAuthorized(user, resource.name, self.action):
                     editTypeList = resource.getOption("editTypes")
                     editTypeOption = resource.getOption("editType")
                     if editTypeList:
@@ -81,10 +83,8 @@ class EditFeature_Create(WidgetBase):
                         self.widgetCloneList.append(self.clone(resource))
 
     def getMandatoryResourceOptions(self):
-        optionDic = {
-            "editable": "editable",
-            "geometryTypeString": "geometrytype"
-            }
+        optionDic = {"editable": "editable",
+                     "geometryTypeString": "geometrytype"}
         return optionDic
 
     def getClones(self):
@@ -115,6 +115,7 @@ class EditFeature_Drag(WidgetBase):
                         self.resources.append(resource)
                         resource.addWidget(self)
 
+
 class EditFeature_Update(WidgetBase):
 
     def getServiceType(self):
@@ -140,11 +141,10 @@ class EditFeature_Update(WidgetBase):
                         resource.addWidget(self)
 
     def getMandatoryResourceOptions(self):
-        optionDic = {
-            "editable": "editable",
-            "geometryEditable": "editgeom"
-            }
+        optionDic = {"editable": "editable",
+                     "geometryEditable": "editgeom"}
         return optionDic
+
 
 class EditFeature_Split(WidgetBase):
 
@@ -161,6 +161,7 @@ class EditFeature_Split(WidgetBase):
                 if isAuthorized(user, resource.name, self.action):
                     self.resources.append(resource)
                     resource.addWidget(self)
+
 
 class EditFeature_Delete(WidgetBase):
 

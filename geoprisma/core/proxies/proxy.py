@@ -166,8 +166,3 @@ class Proxy(object):
         for objResource in objArrayResource:
             if not isAuthorized(user, objResource.name, self.getAction()):
                 raise Exception("Not Authorized by ACL")
-
-
-
-
-

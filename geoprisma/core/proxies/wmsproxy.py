@@ -22,7 +22,6 @@ class WMSProxyFactory(object):
     WMS_OP_GETLEGENDGRAPHIC = 3
     WMS_OP_GETFEATUREINFO = 4
 
-
     def getWMSProxy(self, pobjService, prequest):
         """
         Recupere le proxy selon l'operation
@@ -74,6 +73,7 @@ class WMSProxyFactory(object):
             return self.WMS_OP_GETFEATUREINFO
         return None
 
+
 class WMSProxy(proxy.Proxy):
     """
     Class WMSProxy qui herite de la class proxy de base
@@ -99,7 +99,16 @@ class WMSProxy(proxy.Proxy):
         Returns:
             HttpResponce
         """
-        excluded_headers = ('connection','keep-alive','proxy-authenticate','proxy-authorization','te','trailers','transfer-encoding','content-encoding','content-length','upgrade')
+        excluded_headers = ('connection',
+                            'keep-alive',
+                            'proxy-authenticate',
+                            'proxy-authorization',
+                            'te',
+                            'trailers',
+                            'transfer-encoding',
+                            'content-encoding',
+                            'content-length',
+                            'upgrade')
 
         if self.m_objRequest.method == "POST":
             strServiceURL = self.m_objService.source
@@ -134,6 +143,7 @@ class WMSProxy(proxy.Proxy):
     def getCaching(self):
         pass
 
+
 class WMSGetCapabilityProxy(proxy.Proxy):
     """
     Class WMSGetCapabilityProxy qui traite seulement le getCapabilities
@@ -151,7 +161,16 @@ class WMSGetCapabilityProxy(proxy.Proxy):
         Returns:
             HttpResponce
         """
-        excluded_headers = ('connection','keep-alive','proxy-authenticate','proxy-authorization','te','trailers','transfer-encoding','upgrade','content-encoding','content-length')
+        excluded_headers = ('connection',
+                            'keep-alive',
+                            'proxy-authenticate',
+                            'proxy-authorization',
+                            'te',
+                            'trailers',
+                            'transfer-encoding',
+                            'upgrade',
+                            'content-encoding',
+                            'content-length')
         url = self.addParam(self.m_objService.source)
         requestUrl = requests.get(url)
         objXml = ET.fromstring(requestUrl.text.encode("utf-8"))
@@ -169,11 +188,11 @@ class WMSGetCapabilityProxy(proxy.Proxy):
             Convertie l'url du XMl pour correspondre a l'url de geoprisma
 
             """
-            splitUrl = url.split("&",1)
+            splitUrl = url.split("&", 1)
             newUrl = onlineResourceUrl+"?"+splitUrl[1]
             return newUrl
 
-        def getAndValidateRes(layer,removeList):
+        def getAndValidateRes(layer, removeList):
             """
             Recupere les resources d'un datastore et verifie les droits de l'utilisateur
 
@@ -190,7 +209,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                 datastore = Datastore.objects.get(service=self.m_objService, layers=layerName.text)
                 dataResourceList = datastore.resource_set.all()
                 for resource in dataResourceList:
-                    if isAuthorized(user, resource.name,"read"):
+                    if isAuthorized(user, resource.name, "read"):
                         break
                     else:
                         removeList.append(layer)
@@ -210,7 +229,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                             for request in capability:
                                 httptag = request.find("DCPType").find("HTTP")
                                 for method in httptag:
-                                    method.set("onlineResource",onlineResourceUrl)
+                                    method.set("onlineResource", onlineResourceUrl)
                         if capability.tag == "Layer":
                             removeGroupList = list()
                             for layerGroup in capability:
@@ -224,7 +243,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                                         layerGroup.remove(layer)
                                     filtredLayerList = layerGroup.findall("Layer")
                                     if filtredLayerList.__len__() == 0:
-                                        getAndValidateRes(layerGroup,removeGroupList)
+                                        getAndValidateRes(layerGroup, removeGroupList)
                                     else:
                                         for layer in filtredLayerList:
                                             layerStyle = layer.find("Style")
@@ -232,7 +251,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                                                 legendUrl = layerStyle.find("LegendURL")
                                                 legendOnlineRes = legendUrl.find("OnlineResource")
                                                 newLegendOnlineResUrl = changeUrl(legendOnlineRes.get("{http://www.w3.org/1999/xlink}href"))
-                                                legendOnlineRes.set("{http://www.w3.org/1999/xlink}href",newLegendOnlineResUrl)
+                                                legendOnlineRes.set("{http://www.w3.org/1999/xlink}href", newLegendOnlineResUrl)
                             for layer in removeGroupList:
                                 try:
                                     capability.remove(layer)
@@ -240,7 +259,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                                     pass
                             capabilityList = capability.findall("Layer")
                             if capabilityList.__len__() == 0:
-                                getAndValidateRes(capability,removeCapabilityList)
+                                getAndValidateRes(capability, removeCapabilityList)
                             else:
                                 for layer in capabilityList:
                                     layerStyle = layer.find("Style")
@@ -248,7 +267,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                                         legendUrl = layerStyle.find("LegendURL")
                                         legendOnlineRes = legendUrl.find("OnlineResource")
                                         newLegendOnlineResUrl = changeUrl(legendOnlineRes.get("{http://www.w3.org/1999/xlink}href"))
-                                        legendOnlineRes.set("{http://www.w3.org/1999/xlink}href",newLegendOnlineResUrl)
+                                        legendOnlineRes.set("{http://www.w3.org/1999/xlink}href", newLegendOnlineResUrl)
                         for capability in removeCapabilityList:
                             elem.remove(capability)
         #WMS VERSION 1.1.0
@@ -265,7 +284,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                                 httptag = request.find("DCPType").find("HTTP")
                                 for method in httptag:
                                     onlineRes = method.find("OnlineResource")
-                                    onlineRes.set("{http://www.w3.org/1999/xlink}href",onlineResourceUrl)
+                                    onlineRes.set("{http://www.w3.org/1999/xlink}href", onlineResourceUrl)
                         if capability.tag == "Layer":
                             removeGroupList = list()
                             for layerGroup in capability:
@@ -279,7 +298,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                                         layerGroup.remove(layer)
                                     filtredLayerList = layerGroup.findall("Layer")
                                     if filtredLayerList.__len__() == 0:
-                                        getAndValidateRes(layerGroup,removeGroupList)
+                                        getAndValidateRes(layerGroup, removeGroupList)
                                     else:
                                         for layer in filtredLayerList:
                                             layerStyle = layer.find("Style")
@@ -287,7 +306,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                                                 legendUrl = layerStyle.find("LegendURL")
                                                 legendOnlineRes = legendUrl.find("OnlineResource")
                                                 newLegendOnlineResUrl = changeUrl(legendOnlineRes.get("{http://www.w3.org/1999/xlink}href"))
-                                                legendOnlineRes.set("{http://www.w3.org/1999/xlink}href",newLegendOnlineResUrl)
+                                                legendOnlineRes.set("{http://www.w3.org/1999/xlink}href", newLegendOnlineResUrl)
                             for layer in removeGroupList:
                                 try:
                                     capability.remove(layer)
@@ -295,7 +314,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                                     pass
                             capabilityList = capability.findall("Layer")
                             if capabilityList.__len__() == 0:
-                                getAndValidateRes(capability,removeCapabilityList)
+                                getAndValidateRes(capability, removeCapabilityList)
                             else:
                                 for layer in capabilityList:
                                     layerStyle = layer.find("Style")
@@ -303,7 +322,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                                         legendUrl = layerStyle.find("LegendURL")
                                         legendOnlineRes = legendUrl.find("OnlineResource")
                                         newLegendOnlineResUrl = changeUrl(legendOnlineRes.get("{http://www.w3.org/1999/xlink}href"))
-                                        legendOnlineRes.set("{http://www.w3.org/1999/xlink}href",newLegendOnlineResUrl)
+                                        legendOnlineRes.set("{http://www.w3.org/1999/xlink}href", newLegendOnlineResUrl)
                         for capability in removeCapabilityList:
                             elem.remove(capability)
         # WMS VERSION 1.1.1
@@ -311,7 +330,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
             for elem in objXml:
                 if elem.tag == "Service":
                     onlineRes = elem.find("OnlineResource")
-                    onlineRes.set("{http://www.w3.org/1999/xlink}href",onlineResourceUrl)
+                    onlineRes.set("{http://www.w3.org/1999/xlink}href", onlineResourceUrl)
                 if elem.tag == "Capability":
                     removeCapabilityList = list()
                     for capability in elem:
@@ -320,7 +339,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                                 httptag = request.find("DCPType").find("HTTP")
                                 for method in httptag:
                                     onlineRes = method.find("OnlineResource")
-                                    onlineRes.set("{http://www.w3.org/1999/xlink}href",onlineResourceUrl)
+                                    onlineRes.set("{http://www.w3.org/1999/xlink}href", onlineResourceUrl)
                         if capability.tag == "Layer":
                             removeGroupList = list()
                             for layerGroup in capability:
@@ -334,7 +353,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                                         layerGroup.remove(layer)
                                     filtredLayerList = layerGroup.findall("Layer")
                                     if filtredLayerList.__len__() == 0:
-                                        getAndValidateRes(layerGroup,removeGroupList)
+                                        getAndValidateRes(layerGroup, removeGroupList)
                                     else:
                                         for layer in filtredLayerList:
                                             layerStyle = layer.find("Style")
@@ -342,7 +361,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                                                 legendUrl = layerStyle.find("LegendURL")
                                                 legendOnlineRes = legendUrl.find("OnlineResource")
                                                 newLegendOnlineResUrl = changeUrl(legendOnlineRes.get("{http://www.w3.org/1999/xlink}href"))
-                                                legendOnlineRes.set("{http://www.w3.org/1999/xlink}href",newLegendOnlineResUrl)
+                                                legendOnlineRes.set("{http://www.w3.org/1999/xlink}href", newLegendOnlineResUrl)
                             for layer in removeGroupList:
                                 try:
                                     capability.remove(layer)
@@ -350,7 +369,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                                     pass
                             capabilityList = capability.findall("Layer")
                             if capabilityList.__len__() == 0:
-                                getAndValidateRes(capability,removeCapabilityList)
+                                getAndValidateRes(capability, removeCapabilityList)
                             else:
                                 for layer in capabilityList:
                                     layerStyle = layer.find("Style")
@@ -358,7 +377,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                                         legendUrl = layerStyle.find("LegendURL")
                                         legendOnlineRes = legendUrl.find("OnlineResource")
                                         newLegendOnlineResUrl = changeUrl(legendOnlineRes.get("{http://www.w3.org/1999/xlink}href"))
-                                        legendOnlineRes.set("{http://www.w3.org/1999/xlink}href",newLegendOnlineResUrl)
+                                        legendOnlineRes.set("{http://www.w3.org/1999/xlink}href", newLegendOnlineResUrl)
                         for capability in removeCapabilityList:
                             elem.remove(capability)
         #WMS VERSION 1.3.0
@@ -366,11 +385,11 @@ class WMSGetCapabilityProxy(proxy.Proxy):
             schemaLocation = objXml.get("{http://www.w3.org/2001/XMLSchema-instance}schemaLocation")
             schemaLocationList = schemaLocation.split(" ")
             schemaLocationList[-1] = changeUrl(schemaLocationList[-1])
-            objXml.set("{http://www.w3.org/2001/XMLSchema-instance}schemaLocation"," ".join(schemaLocationList))
+            objXml.set("{http://www.w3.org/2001/XMLSchema-instance}schemaLocation", " ".join(schemaLocationList))
             for elem in objXml:
                 if elem.tag == "{http://www.opengis.net/wms}Service":
                     onlineRes = elem.find("{http://www.opengis.net/wms}OnlineResource")
-                    onlineRes.set("{http://www.w3.org/1999/xlink}href",onlineResourceUrl)
+                    onlineRes.set("{http://www.w3.org/1999/xlink}href", onlineResourceUrl)
                 if elem.tag == "{http://www.opengis.net/wms}Capability":
                     removeCapabilityList = list()
                     for capability in elem:
@@ -379,7 +398,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                                 httptag = request.find("{http://www.opengis.net/wms}DCPType").find("{http://www.opengis.net/wms}HTTP")
                                 for method in httptag:
                                     onlineRes = method.find("{http://www.opengis.net/wms}OnlineResource")
-                                    onlineRes.set("{http://www.w3.org/1999/xlink}href",onlineResourceUrl)
+                                    onlineRes.set("{http://www.w3.org/1999/xlink}href", onlineResourceUrl)
                         if capability.tag == "{http://www.opengis.net/wms}Layer":
                             removeGroupList = list()
                             for layerGroup in capability:
@@ -393,7 +412,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                                         layerGroup.remove(layer)
                                     filtredLayerList = layerGroup.findall("{http://www.opengis.net/wms}Layer")
                                     if filtredLayerList.__len__() == 0:
-                                        getAndValidateRes(layerGroup,removeGroupList)
+                                        getAndValidateRes(layerGroup, removeGroupList)
                                     else:
                                         for layer in filtredLayerList:
                                             layerStyle = layer.find("{http://www.opengis.net/wms}Style")
@@ -401,7 +420,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                                                 legendUrl = layerStyle.find("{http://www.opengis.net/wms}LegendURL")
                                                 legendOnlineRes = legendUrl.find("{http://www.opengis.net/wms}OnlineResource")
                                                 newLegendOnlineResUrl = changeUrl(legendOnlineRes.get("{http://www.w3.org/1999/xlink}href"))
-                                                legendOnlineRes.set("{http://www.w3.org/1999/xlink}href",newLegendOnlineResUrl)
+                                                legendOnlineRes.set("{http://www.w3.org/1999/xlink}href", newLegendOnlineResUrl)
                             for layer in removeGroupList:
                                 try:
                                     capability.remove(layer)
@@ -409,7 +428,7 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                                     pass
                             capabilityList = capability.findall("{http://www.opengis.net/wms}Layer")
                             if capabilityList.__len__() == 0:
-                                getAndValidateRes(capability,removeCapabilityList)
+                                getAndValidateRes(capability, removeCapabilityList)
                             else:
                                 for layer in capabilityList:
                                     layerStyle = layer.find("{http://www.opengis.net/wms}Style")
@@ -417,10 +436,9 @@ class WMSGetCapabilityProxy(proxy.Proxy):
                                         legendUrl = layerStyle.find("{http://www.opengis.net/wms}LegendURL")
                                         legendOnlineRes = legendUrl.find("{http://www.opengis.net/wms}OnlineResource")
                                         newLegendOnlineResUrl = changeUrl(legendOnlineRes.get("{http://www.w3.org/1999/xlink}href"))
-                                        legendOnlineRes.set("{http://www.w3.org/1999/xlink}href",newLegendOnlineResUrl)
+                                        legendOnlineRes.set("{http://www.w3.org/1999/xlink}href", newLegendOnlineResUrl)
                         for capability in removeCapabilityList:
                             elem.remove(capability)
-
 
         responce = HttpResponse(ET.tostring(objXml, xml_declaration=True, encoding=docinfo.encoding))
         #responce = HttpResponse(requestUrl)

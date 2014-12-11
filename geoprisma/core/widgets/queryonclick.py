@@ -19,4 +19,3 @@ class QueryOnClick(WidgetBase):
                     resource.addWidget(self)
         if len(self.resources) == 0:
             self.toAdd = False
-

@@ -4,13 +4,14 @@ from widgetbase import WidgetBase
 from queryonclick import QueryOnClick
 from resultvectorlayer import ResultVectorLayer
 
+
 class QueryOnClickWizard(WidgetBase):
     """
     QueryOnClickWizard
     """
 
     def __init__(self, widgetModel):
-        super(QueryOnClickWizard,self).__init__(widgetModel)
+        super(QueryOnClickWizard, self).__init__(widgetModel)
         self.queryOnClickWidget = None
         self.resultVectorLayerWidget = None
         self.vectorLayerWidget = None
@@ -37,7 +38,6 @@ class QueryOnClickWizard(WidgetBase):
                     resource.addWidget(self.queryOnClickWidget)
                     resource.addWidget(self.resultVectorLayerWidget)
 
-
     def setVectorLayerWidget(self):
         vectorLayerWidget = WidgetBase()
         vectorLayerWidget.id = "W_MyVectorLayer"
@@ -45,7 +45,7 @@ class QueryOnClickWizard(WidgetBase):
         vectorLayerWidget.type = WidgetType(name="vectorlayer")
         vectorLayerWidget.action = "read"
         vectorLayerWidget.options = {
-            "displayInLayerSwitcher" : False,
+            "displayInLayerSwitcher": False,
         }
 
         if self.getOption("layerName"):
@@ -60,8 +60,8 @@ class QueryOnClickWizard(WidgetBase):
         resultVectorLayerWidget.type = WidgetType(name="resultvectorlayer")
         resultVectorLayerWidget.action = "read"
         resultVectorLayerWidget.options = {
-            "vectorlayer" : self.vectorLayerWidget.id,
-            "singleMode" : True
+            "vectorlayer": self.vectorLayerWidget.id,
+            "singleMode": True
         }
         resultVectorLayerWidget.linkResource(self.user, self.resourceList)
         self.resultVectorLayerWidget = resultVectorLayerWidget
@@ -72,13 +72,13 @@ class QueryOnClickWizard(WidgetBase):
         queryOnClickWidget.name = ""
         queryOnClickWidget.type = WidgetType(name="queryonclick")
         queryOnClickWidget.action = "read"
-        queryOnClickWidget.options =  {
-            "dropDownList" : False,
-            "multipleKey" : "shiftKey",
-            "noMarker" : True,
-            "results" : self.resultVectorLayerWidget.id,
-            "toggle" : True,
-            "displayClass" : "olControlQueryOnClickWizard"
+        queryOnClickWidget.options = {
+            "dropDownList": False,
+            "multipleKey": "shiftKey",
+            "noMarker": True,
+            "results": self.resultVectorLayerWidget.id,
+            "toggle": True,
+            "displayClass": "olControlQueryOnClickWizard"
         }
         if self.getOption("iconCls"):
             queryOnClickWidget.options['iconCls'] = self.getOption("iconCls")

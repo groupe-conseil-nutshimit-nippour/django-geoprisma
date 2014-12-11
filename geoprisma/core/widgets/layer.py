@@ -9,7 +9,7 @@ class Layer(WidgetBase):
     """
     Layer
     """
-    def __init__(self,resourceModel, serviceType=None):
+    def __init__(self, resourceModel, serviceType=None):
         self.name = resourceModel.name
         self.slug = resourceModel.slug
         self.type = WidgetType(name="layer")
@@ -32,7 +32,7 @@ class Layer(WidgetBase):
         for key in options.keys():
             matches = pattern.search(key)
             if matches:
-                newKey =  key.replace(matches.group(0),"",1)
+                newKey = key.replace(matches.group(0), "", 1)
                 optionDic[newKey] = options.pop(key)
                 # Supprime la valeur actuel de la clef trouvee dans le cas de doublon
                 try:
@@ -90,7 +90,6 @@ class Layer(WidgetBase):
           }
           """
         return mark_safe(strUrl)
-
 
     def getWMSParams(self):
         """

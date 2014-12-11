@@ -1,5 +1,6 @@
 from geoprisma.models import Service, Datastore
 
+
 class AppSession(object):
     """
     Objet session qui fait des manipulations dans les templates
@@ -70,7 +71,7 @@ class AppSession(object):
         else:
             return False
 
-    def getWidgetsByOptionValue(self, optionName,optionValue):
+    def getWidgetsByOptionValue(self, optionName, optionValue):
         """
         Recupere un ou des widgets selon une option et sa valeur pour l'assigner dans le template
 
@@ -86,7 +87,6 @@ class AppSession(object):
                     widgetList.append(widget)
         return widgetList
 
-
     def getWidgetsByResource(self, pResource):
         """
         Recupere un ou des widgets selon une resource dans ses resources associees
@@ -98,11 +98,11 @@ class AppSession(object):
         """
         widgetList = []
         for widget in self.widgetList:
-            if hasattr(widget,'resources'):
+            if hasattr(widget, 'resources'):
                 for resource in widget.resources:
                     if resource == pResource:
                         widgetList.append(widget)
-            elif hasattr(widget,'resource'):
+            elif hasattr(widget, 'resource'):
                 if widget.resource == pResource:
                     widgetList.append(widget)
         return widgetList
@@ -125,7 +125,6 @@ class AppSession(object):
                 except IndexError:
                     pass
 
-
     def isInToolbar(self, widgetId):
         """
         Verifie si un widget dans une toolbar
@@ -144,7 +143,6 @@ class AppSession(object):
                 else:
                     return False
 
-
     def getServiceById(self, serviceId):
         """
         Recupere un service dans la base de donnee selon son id
@@ -159,5 +157,3 @@ class AppSession(object):
             return service
         except Service.DoesNotExist:
             return False
-
-
