@@ -12,3 +12,8 @@ dist
 *.tmp
 .DS_store
 *.sqlite3
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
