@@ -17,3 +17,6 @@ dist
 .coverage
 .tox
 nosetests.xml
+
+#Docs
+docs/_build
