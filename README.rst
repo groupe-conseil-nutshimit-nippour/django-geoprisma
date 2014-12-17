@@ -4,6 +4,12 @@
 Django-geoprisma
 ================
 
+.. image:: https://travis-ci.org/groupe-conseil-nutshimit-nippour/django-geoprisma.svg?branch=master
+    :target: https://travis-ci.org/groupe-conseil-nutshimit-nippour/django-geoprisma
+    
+.. image:: https://coveralls.io/repos/groupe-conseil-nutshimit-nippour/django-geoprisma/badge.png?branch=master
+  :target: https://coveralls.io/r/groupe-conseil-nutshimit-nippour/django-geoprisma?branch=master
+
 This is a Django_ version of GeoPrisma_.
 
 
