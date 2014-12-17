@@ -1,0 +1,10 @@
+language: python
+
+install:
+    - pip install coverage coveralls
+    - pip install -e .
+    
+script:
+    - coverage run runtests.py
+    
+after_success: coveralls
