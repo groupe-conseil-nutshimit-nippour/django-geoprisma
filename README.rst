@@ -12,6 +12,12 @@ Requirements
 Spatial database
 
 
+Documentation
+-------------
+
+Online documentation is available at http://django-geoprisma.readthedocs.org/.
+
+
 Installation
 ------------
 
@@ -66,11 +72,6 @@ Load initial data ::
 
 
 Now you are ready to use geoprisma.
-
-Usage
------
-
-In a future documentation.
 
 
 Thanks
