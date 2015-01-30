@@ -75,7 +75,7 @@ class HttpRequestProxy(proxy.Proxy):
                             'upgrade',
                             'content-encoding',
                             'content-length')
-        objPostFields = self.m_objRequest.body
+        objPostFields = ""
         objArrayLayers = []
         objArrayTmpFiles = []
 
@@ -99,7 +99,12 @@ class HttpRequestProxy(proxy.Proxy):
 
         url = self.addParam(self.m_objService.source, strAdditionalParams)
         postfiles = self.m_objRequest.FILES
-        postparams = self.m_objRequest.POST
+        
+        if self.m_objRequest.body != "" and len(self.m_objRequest.POST) == 0:
+            objPostFields = self.m_objRequest.body
+        else:
+            objPostFields = self.m_objRequest.POST
+        
         requestUrl = requests.post(url, files=postfiles, data=postparams)
 
         #Need to remove the temporary files
