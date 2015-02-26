@@ -41,8 +41,8 @@ class WFSProxyFactory(object):
         iRequestType = None
         iOPType = None
         if prequest.method == 'POST':
-            if prequest and prequest.body:
-                strPostRequest = prequest.body
+            if prequest and prequest.POST.get('data'):
+                strPostRequest = prequest.POST.get('data')
                 iRequestType = WFSProxy.REQUEST_TYPE_POSTXML
             else:
                 strPostRequest = prequest.body
@@ -190,7 +190,7 @@ class WFSReadProxy(WFSProxy):
         Traite l'information a retourner
 
         Returns:
-            HttpResponce
+            HttpResponse
         """
         excluded_headers = ('connection',
                             'keep-alive',
@@ -208,51 +208,71 @@ class WFSReadProxy(WFSProxy):
             strContentType = self.m_strContentType
             strPathInfo = self.getPathInfo()
             url = self.addParam(self.m_objService.source)
-            requestUrl = requests.post(url, data=self.m_objRequest.body)
-            responce = HttpResponse(requestUrl)
+            requestUrl = requests.post(url, data=strPostRequest)
+            response = HttpResponse(requestUrl)
+            response_content = response.content
 
             for header in requestUrl.headers:
                 if header not in excluded_headers:
-                    responce[header] = requestUrl.headers.get(header)
+                    response[header] = requestUrl.headers.get(header)
 
             if requestUrl.headers['Content-Type'] == 'text/csv':
+                strNewlineReplaceChar = None
+                objCsvSeperatorChar = None
+                utf8DecodeOption = None
                 strFileName = "record.csv"
-                responce['Content-Disposition'] = 'attachement; filename="'+strFileName+'"'
+                response['Content-Disposition'] = 'attachement; filename="'+strFileName+'"'
                 try:
-                    strNewlineReplaceChar = self.m_objService.options['csvNewlineReplaceChar']
-                    objCsvSeperatorChar = self.m_objService.options['csvSeperatorChar']
+                    strNewlineReplaceCharOption = self.m_objService.serviceoption_set.filter(name='csvNewlineReplaceChar')
+                    if len(strNewlineReplaceCharOption) > 0:
+                        strNewlineReplaceChar = strNewlineReplaceCharOption[0].value
+
+                    objCsvSeperatorCharOption = self.m_objService.serviceoption_set.filter(name='csvSeperatorChar')
+                    if len(objCsvSeperatorCharOption) > 0:
+                        objCsvSeperatorChar = objCsvSeperatorCharOption[0].value
+
+                    utf8DecodeOption = self.m_objService.serviceoption_set.filter(name='utf8Decode')
+                    if len(utf8DecodeOption) > 0:
+                        utf8DecodeOption = utf8DecodeOption[0].value
+
                     if objCsvSeperatorChar:
                         strCsvSeperatorChar = objCsvSeperatorChar
                     else:
                         strCsvSeperatorChar = ','
                     if strNewlineReplaceChar:
-                        objArrayPatterns = re.findall('(\"[^\"]*\"'+strCsvSeperatorChar+'?|[^'+strCsvSeperatorChar+']*'+strCsvSeperatorChar+'?)', responce)
+                        objArrayPatterns = re.findall('(\"[^\"]*\"'+strCsvSeperatorChar+'?|[^'+strCsvSeperatorChar+']*'+strCsvSeperatorChar+'?)', response.content)
+                        objArrayPatterns = [pattern.decode('utf-8') for pattern in objArrayPatterns]
                         if objArrayPatterns:
                             for index in range(objArrayPatterns.count()):
                                 strPattern = objArrayPatterns[index]
                                 iQuotedString = re.search('(\"[^\"]*\"'+strCsvSeperatorChar+'?)', strPattern)
                                 if iQuotedString:
                                     objArrayPatterns[index] = strPattern.replace("\n", strNewlineReplaceChar)
-                                    responce.content = ''.join(objArrayPatterns)
+                            objArrayPatterns = [pattern.encode('utf-8') for pattern in objArrayPatterns]
+                            response.content = ''.join(objArrayPatterns)
                 except Exception:
-                    raise Exception("CSV Error")
+                    raise
                 try:
-                    utf8DecodeOption = self.m_objService.serviceoption_set.filter(name='utf8Decode').values_list('value', flat=True)
-                    if len(utf8DecodeOption) > 0:
-                        if utf8DecodeOption[0] == "true":
-                            responce.content.utf8Decode()
+                    if utf8DecodeOption == "true":
+                        response_content = response_content.decode('utf-8').encode('iso-8859-1')
                 except Exception:
-                    raise Exception("Utf-8 decode error.")
-            return responce
+                    raise
+
+                response.content = ""
+                # Write UTF-8 BOM
+                response.write(u'\ufeff'.encode('utf-8'))
+                response.write(response_content)
+
+            return response
         elif self.m_iRequestType == self.REQUEST_TYPE_GET:
             strPathInfo = self.getPathInfo()
             requestUrl = requests.get(self.addParam(self.m_objService.source))
-            responce = HttpResponse(requestUrl)
+            response = HttpResponse(requestUrl)
             for header in requestUrl.headers:
                 if header not in excluded_headers:
-                    responce[header] = requestUrl.headers.get(header)
+                    response[header] = requestUrl.headers.get(header)
 
-            return responce
+            return response
 
 
 class WFSGetCapabilityProxy(WFSProxy):
