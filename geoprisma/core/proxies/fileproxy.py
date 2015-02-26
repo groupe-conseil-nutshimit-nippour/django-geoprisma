@@ -387,7 +387,7 @@ class FileTree(object):
             return
         objArrayUploadedItem = self.getUploadedItem(prequest)
         strFilePath = strBasePath+'/'+objArrayUploadedItem.name
-        if os.path.isfile(strFilePath):
+        if os.path.exists(strFilePath):
             objResponse = {'success': False,
                            'errors': {'message': "File already exists"}}
         # if objResponse is False and objArrayUploadedItem['error'] is not UPLOAD_ERR_OK:
@@ -461,15 +461,17 @@ class FileTree(object):
         strFilePath = self.getRootPath()+'/'+pstrFilePath
 
         if os.path.isfile(strFilePath):
-            if os.remove(strFilePath):
+            try:
+                os.remove(strFilePath)
                 objResponse = {'success': True}
-            else:
+            except:
                 objResponse = {'success': False,
                                'errors': {'message': 'Could not delete file'}}
         elif os.path.isdir(strFilePath):
-            if os.rmdir(strFilePath):
+            try:
+                os.rmdir(strFilePath)
                 objResponse = {'success': True}
-            else:
+            except:
                 objResponse = {'success': False,
                                'errors': {'message': 'Could not delete folder. Is it empty?'}}
         else:
@@ -689,4 +691,4 @@ class FileDeleteProxy(FileProxy):
         """
         strFilePath = self.getLayer()
         objFileTree = FileTree(self.m_objService.source)
-        HttpResponse(objFileTree.delete(strFilePath))
+        return HttpResponse(objFileTree.delete(strFilePath))
