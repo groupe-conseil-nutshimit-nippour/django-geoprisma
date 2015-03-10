@@ -142,7 +142,7 @@ class FeatureServerProxyFactory(object):
 
     def isCreate(self):
         data_id = self.featureServerProxy.getID()
-        return data_id is not None and self.request.body != "" and self.request.method == "POST"
+        return data_id is None and self.request.body != "" and self.request.method == "POST"
 
     def isUpdate(self):
         data_id = self.featureServerProxy.getID()
