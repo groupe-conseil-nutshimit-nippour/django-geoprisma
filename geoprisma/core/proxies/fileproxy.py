@@ -123,7 +123,7 @@ class FileProxy(proxy.Proxy):
             "" si null
         """
         if self.m_objRequest.REQUEST.get('path') != "":
-            path = re.sub(r'^root', '', self.m_objRequest.REQUEST.get('path'))
+            path = re.sub(r'^root\/?', '', self.m_objRequest.REQUEST.get('path'))
             return path.replace('\\', '/')
         else:
             return ''
@@ -192,6 +192,7 @@ class FileProxy(proxy.Proxy):
         objArrayDSLayers = pobjDatastore.values("layers")[0].get("layers")
         bAuthorized = False
         for strDSLayer in objArrayDSLayers:
+            strDSLayer = strDSLayer.get("layers")
             if strDSLayer[-1] == '/':
                 strDSLayer = strDSLayer[0, -1]
             objArrayDSPath = strDSLayer.split('/')
@@ -199,10 +200,10 @@ class FileProxy(proxy.Proxy):
             iNumDSPathNode = objArrayDSPath.__len__()
             iNumLayerPathNode = objArrayLayerPath.__len__()
             iNumPathNode = min(iNumDSPathNode, iNumLayerPathNode)
-            for iIter in (0, iNumLayerPathNode):
+            for iIter in range(0, iNumPathNode):
                 if objArrayDSPath[iIter] != objArrayLayerPath[iIter]:
                     break
-                if iIter+1 >= iNumDSPathNode:
+                if iIter+1 >= iNumPathNode:
                     bAuthorized = True
             if bAuthorized:
                 break
@@ -620,7 +621,7 @@ class FileViewProxy(FileProxy):
         """
         strFilePath = self.getLayer()
         objFileTree = FileTree(self.m_objService.source)
-        objFileTree.download(strFilePath, False)
+        return objFileTree.download(strFilePath, False)
 
 
 class FileUploadProxy(FileProxy):
