@@ -151,19 +151,19 @@ class WFSProxy(proxy.Proxy):
             Tableau de couches
         """
         objArrayLayers = []
+        namespaces = {'wfs': 'http://www.opengis.net/wfs',
+                      '__empty_ns': ''}
         if self.m_iRequestType == self.REQUEST_TYPE_POSTXML:
             objDomDoc = ET.fromstring(self.m_strPostRequest)
-            objArrayXPathResult = objDomDoc.findall('./wfs:GetFeature/wfs:Query/[@typeName]',
-                                                    namespaces=dict(wfs='http://www.opengis.net/wfs'))
+            objArrayXPathResult = objDomDoc.findall('./wfs:Query/', namespaces)
             if objArrayXPathResult:
-                strTypeNames = str(objArrayXPathResult[0].tag)
-                strTok = strTypeNames.split(',')
-                while strTok is not False:
-                    objMatches = re.search('/^(?:\w+:)?(\w+)(?:=\w+)?$/', strTok)
+                strTypeNames = str(objArrayXPathResult[0].get('typeName'))
+                listTok = strTypeNames.split(',')
+                for strTok in listTok:
+                    objMatches = re.search('^(?:\w+:)?(\w+)(?:=\w+)?$', strTok)
                     if objMatches:
-                        strFTName = objMatches.group(0)
+                        strFTName = objMatches.group(1)
                         objArrayLayers.append(strFTName)
-                    strTok = False
         elif self.m_iRequestType == self.REQUEST_TYPE_GET:
             for (strKey, strValue) in self.m_objRequest.GET.iteritems():
                 if strKey.upper() == "LAYERS":
@@ -208,7 +208,10 @@ class WFSReadProxy(WFSProxy):
             strContentType = self.m_strContentType
             strPathInfo = self.getPathInfo()
             url = self.addParam(self.m_objService.source)
-            requestUrl = requests.post(url, data=strPostRequest)
+            headers = {}
+            if strContentType == "text/xml" or strContentType == "application/xml":
+                headers = {'Content-Type': strContentType+";charset=UTF-8"}
+            requestUrl = requests.post(url, data=strPostRequest, headers=headers)
             response = HttpResponse(requestUrl)
             response_content = response.content
 
