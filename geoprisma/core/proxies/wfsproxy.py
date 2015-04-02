@@ -108,12 +108,13 @@ class WFSProxyFactory(object):
         Returns:
             Operation WFS
         """
-        objDomDoc = minidom.parseString(pstrXMLRequest)
-        if objDomDoc.childNodes[0].localName == 'GetCapabilities':
+        objDomDoc = ET.fromstring(pstrXMLRequest)
+        rootTag = ET.QName(objDomDoc.tag).localname
+        if rootTag == 'GetCapabilities':
             return self.WFS_OP_GETCAPABILITIES
-        elif objDomDoc.childNodes[0].localName == 'DescribeFeatureType':
+        elif rootTag == 'DescribeFeatureType':
             return self.WFS_OP_DESCRIBEFEATURETYPE
-        elif objDomDoc.childNodes[0].localName == 'GetFeature':
+        elif rootTag == 'GetFeature':
             return self.WFS_OP_GETFEATURE
         return None
 
@@ -211,6 +212,8 @@ class WFSReadProxy(WFSProxy):
             headers = {}
             if strContentType == "text/xml" or strContentType == "application/xml":
                 headers = {'Content-Type': strContentType+";charset=UTF-8"}
+            if isinstance(strPostRequest, unicode):
+                strPostRequest = strPostRequest.encode("utf-8")
             requestUrl = requests.post(url, data=strPostRequest, headers=headers)
             response = HttpResponse(requestUrl)
             response_content = response.content
