@@ -4,7 +4,6 @@ import re
 import requests
 from django.conf import settings
 from django.http import HttpResponse
-from xml.dom import minidom
 from lxml import etree as ET
 from django.contrib.auth.models import User
 from geoprisma.utils import isAuthorized
