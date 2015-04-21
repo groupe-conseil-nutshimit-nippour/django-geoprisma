@@ -100,7 +100,7 @@ class HttpRequestProxy(proxy.Proxy):
         url = self.addParam(self.m_objService.source, strAdditionalParams)
         postfiles = self.m_objRequest.FILES
         
-        if self.m_objRequest.body != "" and len(self.m_objRequest.POST) == 0:
+        if len(self.m_objRequest.POST) == 0 and self.m_objRequest.body != "":
             objPostFields = self.m_objRequest.body
         else:
             objPostFields = self.m_objRequest.POST
