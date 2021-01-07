@@ -2,7 +2,7 @@ Django==1.7.1
 django-geoprisma
 argparse==1.2.1
 django-modeltranslation==0.8
-lxml==3.4.0
+lxml==4.6.2
 psycopg2==2.5.4
 requests==2.4.3
 wsgiref==0.1.2
